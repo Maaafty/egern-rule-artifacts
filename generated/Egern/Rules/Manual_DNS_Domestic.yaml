@@ -1,0 +1,6 @@
+# Manual DNS domestic overrides.
+# Keep entries paired with manual routing rules when routing is also overridden.
+domain_suffix_set:
+  - "gamekee.com"
+  - "qiecdn.com"
+  - "maj-soul.com"

@@ -1,0 +1,6 @@
+# Manual force-DIRECT overrides.
+# Keep routing entries paired with Manual_DNS_Domestic or Manual_DNS_Foreign.
+domain_suffix_set:
+  - "gamekee.com"
+  - "qiecdn.com"
+  - "maj-soul.com"
