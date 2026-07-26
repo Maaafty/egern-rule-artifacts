@@ -44,9 +44,29 @@ export function settingsFromEnv(env = {}) {
     showTabMall: envBoolean(env, "SHOW_TAB_MALL", true),
     showTabMessages: envBoolean(env, "SHOW_TAB_MESSAGES", true),
     showTabMine: envBoolean(env, "SHOW_TAB_MINE", true),
+    showMineOffline: envBoolean(env, "SHOW_MINE_OFFLINE", true),
+    showMineHistory: envBoolean(env, "SHOW_MINE_HISTORY", true),
+    showMineFavorites: envBoolean(env, "SHOW_MINE_FAVORITES", true),
+    showMineWatchLater: envBoolean(env, "SHOW_MINE_WATCH_LATER", true),
+    showMineCourse: envBoolean(env, "SHOW_MINE_COURSE", true),
+    showMineFreeData: envBoolean(env, "SHOW_MINE_FREE_DATA", true),
+    showMineDress: envBoolean(env, "SHOW_MINE_DRESS", true),
+    showMineGame: envBoolean(env, "SHOW_MINE_GAME", true),
+    showMineWallet: envBoolean(env, "SHOW_MINE_WALLET", true),
+    showMineLive: envBoolean(env, "SHOW_MINE_LIVE", true),
+    showMinePromotions: envBoolean(env, "SHOW_MINE_PROMOTIONS", true),
+    showMineMall: envBoolean(env, "SHOW_MINE_MALL", true),
+    showMineAudio: envBoolean(env, "SHOW_MINE_AUDIO", true),
+    showMineTeen: envBoolean(env, "SHOW_MINE_TEEN", true),
+    showMineSupport: envBoolean(env, "SHOW_MINE_SUPPORT", true),
+    showMineCreatorSection: envBoolean(env, "SHOW_MINE_CREATOR_SECTION", true),
+    showMineRecommendSection: envBoolean(env, "SHOW_MINE_RECOMMEND_SECTION", true),
+    showMineMoreSection: envBoolean(env, "SHOW_MINE_MORE_SECTION", true),
     mineHideItems: envList(env, "MINE_HIDE_ITEMS"),
     mineHideSections: envList(env, "MINE_HIDE_SECTIONS"),
     mineHideBlocks: envList(env, "MINE_HIDE_BLOCKS"),
+    removeDynamicAdParam: envBoolean(env, "REMOVE_DYNAMIC_AD_PARAM", true),
+    dynamicRequestDiagnostics: envBoolean(env, "DYNAMIC_REQUEST_DIAGNOSTICS", false),
     debug: envBoolean(env, "DEBUG", false),
   };
 }
@@ -200,9 +220,54 @@ function cleanBottomTabs(body, settings) {
 const MINE_ITEM_KEYS = ["id", "title", "name", "text", "label", "uri", "url"];
 const MINE_SECTION_KEYS = ["id", "title", "up_title", "name", "type", "style"];
 
+const MINE_ITEM_SETTING_RULES = [
+  ["showMineOffline", new Set([396]), ["离线缓存"]],
+  ["showMineHistory", new Set([397]), ["历史记录"]],
+  ["showMineFavorites", new Set([398]), ["我的收藏"]],
+  ["showMineWatchLater", new Set([399]), ["稍后再看"]],
+  ["showMineCourse", new Set([400, 794]), ["我的课程"]],
+  ["showMineFreeData", new Set([401]), ["看视频免流量", "免流量"]],
+  ["showMineDress", new Set([402]), ["个性装扮"]],
+  ["showMineGame", new Set([403, 2542]), ["游戏中心", "我的游戏"]],
+  ["showMineWallet", new Set([404, 741, 791]), ["我的钱包"]],
+  ["showMineLive", new Set([406, 707, 708, 709, 710, 792]), ["直播中心", "主播中心", "主播活动", "开播福利", "我的直播"]],
+  ["showMinePromotions", new Set([174, 423, 533, 990]), ["有奖活动", "任务中心", "邀好友赚红包", "能量加油站"]],
+  ["showMineMall", new Set([622]), ["会员购中心"]],
+  ["showMineAudio", new Set([812]), ["听视频"]],
+  ["showMineTeen", new Set([950, 964, 1070]), ["青少年模式", "青少年守护"]],
+  ["showMineSupport", new Set([407, 797]), ["联系客服", "我的客服"]],
+];
+
+const MINE_SECTION_SETTING_RULES = [
+  ["showMineCreatorSection", ["创作中心"]],
+  ["showMineRecommendSection", ["推荐服务"]],
+  ["showMineMoreSection", ["更多服务"]],
+];
+
+function configuredMineItemSetting(item) {
+  const id = Number(item?.id);
+  const title = normalizedText(item?.title ?? item?.name);
+  for (const [setting, ids, titles] of MINE_ITEM_SETTING_RULES) {
+    if (ids.has(id) || titles.some((candidate) => title === normalizedText(candidate))) return setting;
+  }
+  return null;
+}
+
+function configuredMineSectionSetting(section) {
+  const title = normalizedText(section?.title ?? section?.up_title ?? section?.name);
+  for (const [setting, titles] of MINE_SECTION_SETTING_RULES) {
+    if (titles.some((candidate) => title === normalizedText(candidate))) return setting;
+  }
+  return null;
+}
+
 function cleanMineItemList(items, settings) {
   if (!Array.isArray(items)) return items;
-  return items.filter((item) => !matchesTokenList(item, settings.mineHideItems, MINE_ITEM_KEYS));
+  return items.filter((item) => {
+    if (matchesTokenList(item, settings.mineHideItems, MINE_ITEM_KEYS)) return false;
+    const setting = configuredMineItemSetting(item);
+    return setting === null || settings[setting] !== false;
+  });
 }
 
 function cleanMinePage(body, settings) {
@@ -216,7 +281,11 @@ function cleanMinePage(body, settings) {
   for (const key of ["sections_v2", "sections"]) {
     if (!Array.isArray(body.data[key])) continue;
     body.data[key] = body.data[key]
-      .filter((section) => !matchesTokenList(section, settings.mineHideSections, MINE_SECTION_KEYS))
+      .filter((section) => {
+        if (matchesTokenList(section, settings.mineHideSections, MINE_SECTION_KEYS)) return false;
+        const setting = configuredMineSectionSetting(section);
+        return setting === null || settings[setting] !== false;
+      })
       .map((section) => {
         if (!isObject(section) || !Array.isArray(section.items)) return section;
         return { ...section, items: cleanMineItemList(section.items, settings) };
@@ -532,6 +601,15 @@ export function cleanProtobufMessage(input, path, settings = settingsFromEnv()) 
   return bytes;
 }
 
+export function cleanDynamicRequestMessage(input, path, settings = settingsFromEnv()) {
+  const bytes = asBytes(input);
+  if (!settings.removeDynamicAdParam) return bytes;
+  if (path.endsWith("/bilibili.app.dynamic.v2.Dynamic/DynAll")) {
+    return removeFields(bytes, new Set([9]));
+  }
+  return bytes;
+}
+
 function parseGrpcFrames(input) {
   const bytes = asBytes(input);
   if (bytes.length < 5) return null;
@@ -577,10 +655,10 @@ async function compressGrpcPayload(ctx, payload, encoding) {
   throw new Error(`unsupported grpc encoding: ${encoding || "unknown"}`);
 }
 
-export async function cleanGrpcBody(input, path, settings, ctx, grpcEncoding = "identity") {
+async function transformGrpcBody(input, transform, ctx, grpcEncoding = "identity") {
   const bytes = asBytes(input);
   const frames = parseGrpcFrames(bytes);
-  if (!frames) return cleanProtobufMessage(bytes, path, settings);
+  if (!frames) return transform(bytes);
 
   const output = [];
   let changed = false;
@@ -595,7 +673,7 @@ export async function cleanGrpcBody(input, path, settings, ctx, grpcEncoding = "
       payload = await decompressGrpcPayload(ctx, payload, grpcEncoding);
       if (!payload) throw new Error("failed to decompress grpc frame");
     }
-    const cleaned = cleanProtobufMessage(payload, path, settings);
+    const cleaned = transform(payload);
     if (bytesEqual(payload, cleaned)) {
       output.push(frame.raw);
       continue;
@@ -611,6 +689,30 @@ export async function cleanGrpcBody(input, path, settings, ctx, grpcEncoding = "
   return changed ? concatBytes(output) : bytes;
 }
 
+export async function cleanGrpcBody(input, path, settings, ctx, grpcEncoding = "identity") {
+  return transformGrpcBody(
+    input,
+    (payload) => cleanProtobufMessage(payload, path, settings),
+    ctx,
+    grpcEncoding,
+  );
+}
+
+export async function cleanDynamicGrpcRequestBody(
+  input,
+  path,
+  settings,
+  ctx,
+  grpcEncoding = "identity",
+) {
+  return transformGrpcBody(
+    input,
+    (payload) => cleanDynamicRequestMessage(payload, path, settings),
+    ctx,
+    grpcEncoding,
+  );
+}
+
 function headerValue(headers, name) {
   if (!headers) return "";
   if (typeof headers.get === "function") return headers.get(name) ?? "";
@@ -624,7 +726,40 @@ function debugLog(settings, message, error) {
 
 export default async function bilibiliClean(ctx) {
   const settings = settingsFromEnv(ctx?.env);
-  if (!ctx?.request || !ctx?.response) return undefined;
+  if (!ctx?.request) return undefined;
+
+  if (!ctx.response) {
+    if (!settings.removeDynamicAdParam) return undefined;
+    let original;
+    try {
+      const url = new URL(ctx.request.url);
+      if (!url.pathname.endsWith("/bilibili.app.dynamic.v2.Dynamic/DynAll")) return undefined;
+      const contentType = String(headerValue(ctx.request.headers, "content-type")).toLowerCase();
+      if (!contentType.includes("grpc") && !contentType.includes("protobuf")) return undefined;
+
+      original = new Uint8Array(await ctx.request.arrayBuffer());
+      const encoding = String(headerValue(ctx.request.headers, "grpc-encoding") || "identity").toLowerCase();
+      const cleaned = await cleanDynamicGrpcRequestBody(original, url.pathname, settings, ctx, encoding);
+      const changed = !bytesEqual(original, cleaned);
+      if (changed && typeof ctx.request.headers?.delete === "function") {
+        ctx.request.headers.delete("content-length");
+      }
+      if (settings.dynamicRequestDiagnostics && typeof ctx.notify === "function") {
+        await ctx.notify({
+          title: "Bilibili 动态请求实验",
+          subtitle: changed ? "已移除 DynAll ad_param" : "请求中未发现 ad_param",
+          body: `bytes=${original.length}->${cleaned.length} response=untouched`,
+          sound: false,
+        });
+      }
+      debugLog(settings, `${changed ? "removed" : "kept"} DynAll request ad_param`);
+      // The Fetch-style request body is single-use; always restore it after reading.
+      return { body: cleaned, headers: ctx.request.headers };
+    } catch (error) {
+      debugLog(settings, "request fail-open", error);
+      return original ? { body: original } : undefined;
+    }
+  }
 
   try {
     const url = new URL(ctx.request.url);
