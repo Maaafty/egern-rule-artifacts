@@ -1,0 +1,55 @@
+name: Bilibili Clean 不拦截动态（对照测试）
+description: 临时对照模块；保留同样的 MITM 和其他去广告功能，但完全不读取或改写 DynAll/DynVideo。
+author: egern-rule-artifacts
+icon: arrow.left.arrow.right
+
+env_schema:
+  CLEAN_HOT_SEARCH:
+    name: 清理热搜
+    description: 隐藏搜索页的热搜榜模块。
+    default_value: "true"
+    options: ["true", "false"]
+  CLEAN_PROMOTION_MODULES:
+    name: 清理推广模块
+    description: 隐藏游戏、购物、活动横幅和大会员推广等商业入口。
+    default_value: "true"
+    options: ["true", "false"]
+  CLEAN_COMMAND_DMS:
+    name: 清理互动弹幕
+    description: 隐藏投票、评分、关注等互动式弹幕。
+    default_value: "true"
+    options: ["true", "false"]
+  DEBUG:
+    name: 调试日志
+    description: 仅排查问题时开启，不记录响应正文。
+    default_value: "false"
+    options: ["true", "false"]
+
+scriptings:
+- http_response:
+    name: Bilibili Clean JSON
+    match: ^https:\/\/(?:app\.bilibili\.com|app\.biliapi\.net|api\.bilibili\.com|api\.biliapi\.net|api\.live\.bilibili\.com)\/(?:x\/v2\/(?:splash\/(?:show|list|brand\/list|event\/list2)|feed\/index(?:\/story)?|search\/square)|pgc\/page\/(?:bangumi|cinema\/tab)|x\/web-interface\/wbi\/index\/top\/feed\/rcmd|xlive\/app-room\/v1\/index\/getInfoByRoom)(?:\?|$)
+    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/3816f542f7dc287cc5a872e41c1e30fdd9ff5b38/generated/Egern/Scripts/Bilibili_Clean.mjs
+    update_interval: 86400
+    max_size: 8388608
+    timeout: 10
+    body_required: true
+    binary_body: false
+- http_response:
+    name: Bilibili Clean gRPC（不含动态）
+    match: ^https:\/\/(?:grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com)\/bilibili\.(?:app\.view\.v1\.View\/(?:View|TFInfo)|app\.viewunite\.v1\.View\/(?:View|RelatesFeed)|community\.service\.dm\.v1\.DM\/DmView|main\.community\.reply\.v1\.Reply\/MainList|polymer\.app\.search\.v1\.Search\/SearchAll)(?:\?|$)
+    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/3816f542f7dc287cc5a872e41c1e30fdd9ff5b38/generated/Egern/Scripts/Bilibili_Clean.mjs
+    update_interval: 86400
+    max_size: 8388608
+    timeout: 10
+    body_required: true
+    binary_body: true
+
+mitm:
+  hostnames:
+  - app.bilibili.com
+  - app.biliapi.net
+  - api.bilibili.com
+  - api.biliapi.net
+  - api.live.bilibili.com
+  - grpc.biliapi.net
