@@ -493,6 +493,27 @@ function cardTypeSummary(items) {
   return [...counts.entries()].map(([type, count]) => `${type}:${count}`).join(",") || "-";
 }
 
+function dynamicIdDiagnostics(items) {
+  const fingerprints = [];
+  let missing = 0;
+  for (const item of items) {
+    const itemBytes = asBytes(item);
+    const extendField = parseFields(itemBytes).find((field) => field.number === 4 && field.wireType === 2);
+    if (!extendField) {
+      missing += 1;
+      continue;
+    }
+    const extend = fieldPayload(itemBytes, extendField);
+    const id = bytesFieldDiagnostic(extend, 1);
+    if (!id.present) {
+      missing += 1;
+      continue;
+    }
+    fingerprints.push(id.fingerprint);
+  }
+  return { fingerprints, missing };
+}
+
 function dynamicDiagnosticsSnapshot(input, path) {
   if (!path.endsWith("/bilibili.app.dynamic.v2.Dynamic/DynAll") &&
       !path.endsWith("/bilibili.app.dynamic.v2.Dynamic/DynVideo")) return null;
@@ -505,10 +526,13 @@ function dynamicDiagnosticsSnapshot(input, path) {
   const items = listFields
     .filter((field) => field.number === 1 && field.wireType === 2)
     .map((field) => fieldPayload(dynamicList, field));
+  const ids = dynamicIdDiagnostics(items);
   return {
     items: items.length,
     matched: items.filter((item) => varintField(item, 1) === 15).length,
     cardTypes: cardTypeSummary(items),
+    idFingerprints: ids.fingerprints,
+    missingIds: ids.missing,
     updateNum: varintField(dynamicList, 2) ?? 0,
     hasMore: varintField(dynamicList, 5) === 1,
     hasMoreField: listFields.some((field) => field.number === 5 && field.wireType === 0),
@@ -521,32 +545,62 @@ function dynamicDiagnosticsSnapshot(input, path) {
   };
 }
 
-function nextDynamicDiagnosticState(ctx, endpoint, historyFingerprint, bodyFingerprint) {
+function readDynamicDiagnosticState(ctx) {
   let state = { sequence: 0, endpoints: {} };
   try {
     state = ctx?.storage?.getJSON?.(DYNAMIC_DIAGNOSTIC_STATE_KEY) ?? state;
   } catch (_) {
     // A missing or unreadable state must not affect traffic.
   }
+  return state;
+}
+
+function writeDynamicDiagnosticState(ctx, state) {
+  try {
+    ctx?.storage?.setJSON?.(DYNAMIC_DIAGNOSTIC_STATE_KEY, state);
+  } catch (_) {
+    // Persistence is diagnostic-only.
+  }
+}
+
+function nextDynamicDiagnosticState(ctx, endpoint, historyFingerprint, bodyFingerprint, idFingerprints) {
+  const state = readDynamicDiagnosticState(ctx);
   const previous = state.endpoints?.[endpoint];
   const sequence = Number(state.sequence ?? 0) + 1;
   const historyRepeat = previous && historyFingerprint !== "-"
     ? previous.historyFingerprint === historyFingerprint
     : null;
   const bodyRepeat = previous ? previous.bodyFingerprint === bodyFingerprint : null;
+  const seenIds = new Set(previous?.seenIds ?? []);
+  const uniqueIds = [...new Set(idFingerprints)];
+  const repeatedIds = uniqueIds.filter((fingerprint) => seenIds.has(fingerprint)).length;
+  const newIds = uniqueIds.length - repeatedIds;
+  const pending = [...(state.pending?.[endpoint] ?? [])];
+  const request = pending.shift() ?? null;
+  for (const fingerprint of uniqueIds) seenIds.add(fingerprint);
+  const boundedSeenIds = [...seenIds].slice(-400);
   const next = {
+    ...state,
     sequence,
     endpoints: {
       ...(state.endpoints ?? {}),
-      [endpoint]: { historyFingerprint, bodyFingerprint },
+      [endpoint]: { historyFingerprint, bodyFingerprint, seenIds: boundedSeenIds },
+    },
+    pending: {
+      ...(state.pending ?? {}),
+      [endpoint]: pending,
     },
   };
-  try {
-    ctx?.storage?.setJSON?.(DYNAMIC_DIAGNOSTIC_STATE_KEY, next);
-  } catch (_) {
-    // Persistence is diagnostic-only.
-  }
-  return { sequence, historyRepeat, bodyRepeat };
+  writeDynamicDiagnosticState(ctx, next);
+  return {
+    sequence,
+    historyRepeat,
+    bodyRepeat,
+    uniqueIds: uniqueIds.length,
+    newIds,
+    repeatedIds,
+    request,
+  };
 }
 
 function diagnosticValue(value) {
@@ -556,15 +610,20 @@ function diagnosticValue(value) {
 async function reportDynamicDiagnostics(ctx, path, before, after, transport) {
   if (!before) return;
   const endpoint = path.endsWith("/DynVideo") ? "DynVideo" : "DynAll";
+  const eventAt = Date.now();
   const state = nextDynamicDiagnosticState(
     ctx,
     endpoint,
     before.history.fingerprint,
     transport.inputFingerprint,
+    before.idFingerprints,
   );
+  const requestLatency = state.request ? eventAt - state.request.at : null;
   const body = [
-    `seq=${state.sequence} endpoint=${endpoint} egern=${ctx?.app?.version ?? "?"} http=${ctx?.response?.status ?? "?"} grpc_status=${transport.grpcStatus}`,
+    `event=response ts=${eventAt} seq=${state.sequence} endpoint=${endpoint} req_seq=${state.request?.sequence ?? "-"} latency_ms=${requestLatency ?? "-"}`,
+    `egern=${ctx?.app?.version ?? "?"} http=${ctx?.response?.status ?? "?"} grpc_status=${transport.grpcStatus}`,
     `cards=${before.items} matched=${before.matched} delivered=${after?.items ?? before.items} types=${before.cardTypes} update_num=${before.updateNum}`,
+    `ids=${before.idFingerprints.length} unique=${state.uniqueIds} new=${state.newIds} seen=${state.repeatedIds} missing=${before.missingIds}`,
     `has_more=${before.hasMore} has_more_field=${before.hasMoreField}`,
     `history=len:${before.history.length} fp:${before.history.fingerprint} repeat:${diagnosticValue(state.historyRepeat)}`,
     `baseline=len:${before.baseline.length} fp:${before.baseline.fingerprint}`,
@@ -572,12 +631,13 @@ async function reportDynamicDiagnostics(ctx, path, before, after, transport) {
     `bytes=${transport.inputBytes}->${transport.outputBytes} changed=${transport.changed} content_length=${transport.contentLength || "-"}`,
     `body_fp=${transport.inputFingerprint}->${transport.outputFingerprint} repeat=${diagnosticValue(state.bodyRepeat)}`,
     `payload_bytes=${before.payloadBytes}->${after?.payloadBytes ?? before.payloadBytes} payload_fp=${before.payloadFingerprint}->${after?.payloadFingerprint ?? before.payloadFingerprint}`,
+    `request=page:${state.request?.page ?? "-"} refresh:${state.request?.refreshType ?? "-"} offset_fp:${state.request?.offsetFingerprint ?? "-"} offset_matches_prev:${state.request?.offsetMatchesPreviousHistory ?? "-"}`,
     `proto=reply[${before.replyFields}] list[${before.listFields}]`,
   ].join("\n");
   console.log(`[Bilibili Clean Diagnostic] ${body.split("\n").join(" | ")}`);
   if (typeof ctx?.notify !== "function") return;
   try {
-    await ctx.notify({
+    ctx.notify({
       title: `Bilibili 分页诊断 #${state.sequence}`,
       subtitle: endpoint,
       body,
@@ -585,6 +645,133 @@ async function reportDynamicDiagnostics(ctx, path, before, after, transport) {
     });
   } catch (error) {
     console.log(`[Bilibili Clean Diagnostic] notification failed: ${String(error)}`);
+  }
+}
+
+function dynamicRequestSnapshot(input, path) {
+  if (!path.endsWith("/bilibili.app.dynamic.v2.Dynamic/DynAll") &&
+      !path.endsWith("/bilibili.app.dynamic.v2.Dynamic/DynVideo")) return null;
+  const message = asBytes(input);
+  return {
+    page: varintField(message, 3) ?? 0,
+    refreshType: varintField(message, 4) ?? 0,
+    coldStart: varintField(message, 10) ?? 0,
+    offset: bytesFieldDiagnostic(message, 2),
+    updateBaseline: bytesFieldDiagnostic(message, 1),
+    assistBaseline: bytesFieldDiagnostic(message, 6),
+    adParamPresent: messageHasField(message, 9, 2),
+    fields: fieldNumberSummary(message),
+    payloadBytes: message.length,
+    payloadFingerprint: fingerprintBytes(message),
+  };
+}
+
+function recordDynamicRequestState(ctx, endpoint, snapshot, at) {
+  const state = readDynamicDiagnosticState(ctx);
+  const sequence = Number(state.requestSequence ?? 0) + 1;
+  const previousHistory = state.endpoints?.[endpoint]?.historyFingerprint;
+  const offsetMatchesPreviousHistory = snapshot.offset.present && previousHistory
+    ? snapshot.offset.fingerprint === previousHistory
+    : null;
+  const request = {
+    sequence,
+    at,
+    page: snapshot.page,
+    refreshType: snapshot.refreshType,
+    offsetFingerprint: snapshot.offset.fingerprint,
+    offsetMatchesPreviousHistory,
+  };
+  const pending = [...(state.pending?.[endpoint] ?? []), request].slice(-20);
+  writeDynamicDiagnosticState(ctx, {
+    ...state,
+    requestSequence: sequence,
+    pending: { ...(state.pending ?? {}), [endpoint]: pending },
+  });
+  return request;
+}
+
+async function decodeGrpcRequestBody(input, ctx, encoding) {
+  const bytes = asBytes(input);
+  const frames = parseGrpcFrames(bytes);
+  if (!frames) {
+    return {
+      payload: bytes,
+      mode: "raw",
+      frameCount: 0,
+      dataFrames: 1,
+      compressedFrames: 0,
+    };
+  }
+  const dataFrames = frames.filter((frame) => (frame.flags & 0x80) === 0);
+  if (dataFrames.length === 0) throw new Error("request contains no gRPC data frame");
+  const frame = dataFrames[0];
+  let payload = frame.payload;
+  if ((frame.flags & 1) !== 0) payload = await decompressGrpcPayload(ctx, payload, encoding);
+  return {
+    payload,
+    mode: "framed",
+    frameCount: frames.length,
+    dataFrames: dataFrames.length,
+    compressedFrames: dataFrames.filter((candidate) => (candidate.flags & 1) !== 0).length,
+  };
+}
+
+function reportDynamicRequest(ctx, endpoint, at, request, snapshot, transport) {
+  const body = [
+    `event=request ts=${at} req_seq=${request.sequence} endpoint=${endpoint}`,
+    `page=${snapshot.page} refresh_type=${snapshot.refreshType} cold_start=${snapshot.coldStart} ad_param=${snapshot.adParamPresent}`,
+    `offset=len:${snapshot.offset.length} fp:${snapshot.offset.fingerprint} matches_prev_history:${diagnosticValue(request.offsetMatchesPreviousHistory)}`,
+    `update_baseline=len:${snapshot.updateBaseline.length} fp:${snapshot.updateBaseline.fingerprint}`,
+    `assist_baseline=len:${snapshot.assistBaseline.length} fp:${snapshot.assistBaseline.fingerprint}`,
+    `wire=${transport.mode} frames=${transport.frameCount} data=${transport.dataFrames} compressed=${transport.compressedFrames} encoding=${transport.encoding}`,
+    `bytes=${transport.inputBytes} body_fp=${transport.inputFingerprint} payload_bytes=${snapshot.payloadBytes} payload_fp=${snapshot.payloadFingerprint}`,
+    `proto=request[${snapshot.fields}] egern=${ctx?.app?.version ?? "?"}`,
+  ].join("\n");
+  console.log(`[Bilibili Clean Diagnostic] ${body.split("\n").join(" | ")}`);
+  if (typeof ctx?.notify !== "function") return;
+  try {
+    ctx.notify({ title: `Bilibili 请求诊断 R#${request.sequence}`, subtitle: endpoint, body, sound: false });
+  } catch (error) {
+    console.log(`[Bilibili Clean Diagnostic] request notification failed: ${String(error)}`);
+  }
+}
+
+async function diagnoseDynamicRequest(ctx, settings) {
+  if (!settings.dynamicDiagnostics) return undefined;
+  const at = Date.now();
+  let original;
+  let path = "?";
+  try {
+    const url = new URL(ctx.request.url);
+    path = url.pathname;
+    const endpoint = path.endsWith("/DynVideo") ? "DynVideo" : path.endsWith("/DynAll") ? "DynAll" : null;
+    if (!endpoint) return undefined;
+    original = new Uint8Array(await ctx.request.arrayBuffer());
+    const encoding = String(headerValue(ctx.request.headers, "grpc-encoding") || "identity").toLowerCase();
+    const decoded = await decodeGrpcRequestBody(original, ctx, encoding);
+    const snapshot = dynamicRequestSnapshot(decoded.payload, path);
+    if (!snapshot) return { body: original };
+    const request = recordDynamicRequestState(ctx, endpoint, snapshot, at);
+    reportDynamicRequest(ctx, endpoint, at, request, snapshot, {
+      ...decoded,
+      encoding,
+      inputBytes: original.length,
+      inputFingerprint: fingerprintBytes(original),
+    });
+    return { body: original };
+  } catch (error) {
+    const message = String(error?.message || error).replace(/[\r\n]+/g, " ").slice(0, 180);
+    try {
+      ctx.notify?.({
+        title: "Bilibili 请求诊断异常",
+        subtitle: path.split("/").pop() || "?",
+        body: `event=request ts=${at}\nerror=${message}\ncaptured_bytes=${original?.length ?? 0}\nfallback=${original ? "return-original-body" : "passthrough-without-read"}`,
+        sound: false,
+      });
+    } catch (_) {
+      // Notification failures must not affect the request.
+    }
+    return original ? { body: original } : undefined;
   }
 }
 
@@ -685,7 +872,8 @@ function debugLog(settings, message, error) {
 
 export default async function bilibiliClean(ctx) {
   const settings = settingsFromEnv(ctx?.env);
-  if (!ctx?.request || !ctx?.response) return undefined;
+  if (!ctx?.request) return undefined;
+  if (!ctx?.response) return diagnoseDynamicRequest(ctx, settings);
   let originalBinary;
   let diagnosticStage = "parse-url";
   let diagnosticPath = "?";

@@ -1,5 +1,5 @@
 name: Bilibili Clean 分页诊断（临时）
-description: 基于当前正式版，输出完整脱敏分页、游标、gRPC 帧与响应指纹诊断，并验证原始 body 回填；测试后请删除。
+description: 基于当前正式版，关联记录动态请求与响应、分页游标、动态 ID、gRPC 帧及响应指纹；测试后请删除。
 author: egern-rule-artifacts
 icon: shield.lefthalf.filled
 
@@ -36,6 +36,15 @@ env_schema:
     options: ["true", "false"]
 
 scriptings:
+- http_request:
+    name: Bilibili Dynamic Request Diagnostic
+    match: ^https:\/\/(?:grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com)\/bilibili\.app\.dynamic\.v2\.Dynamic\/(?:DynAll|DynVideo)(?:\?|$)
+    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/8deaf47ad9bd36252fadd637b187fcb2e0c5488a/generated/Egern/Scripts/Bilibili_Clean.mjs
+    update_interval: 86400
+    max_size: 8388608
+    timeout: 10
+    body_required: true
+    binary_body: true
 - http_response:
     name: Bilibili Clean JSON
     match: ^https:\/\/(?:app\.bilibili\.com|app\.biliapi\.net|api\.bilibili\.com|api\.biliapi\.net|api\.live\.bilibili\.com)\/(?:x\/v2\/(?:splash\/(?:show|list|brand\/list|event\/list2)|feed\/index(?:\/story)?|search\/square)|pgc\/page\/(?:bangumi|cinema\/tab)|x\/web-interface\/wbi\/index\/top\/feed\/rcmd|xlive\/app-room\/v1\/index\/getInfoByRoom)(?:\?|$)
