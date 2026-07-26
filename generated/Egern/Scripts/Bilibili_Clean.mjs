@@ -457,40 +457,132 @@ async function compressGrpcPayload(ctx, payload, encoding) {
   throw new Error(`unsupported grpc encoding: ${encoding || "unknown"}`);
 }
 
+const DYNAMIC_DIAGNOSTIC_STATE_KEY = "bilibili_clean_dynamic_diagnostics_v3";
+
+function fingerprintBytes(input) {
+  const bytes = asBytes(input);
+  let hash = 0x811c9dc5;
+  for (const byte of bytes) {
+    hash ^= byte;
+    hash = Math.imul(hash, 0x01000193) >>> 0;
+  }
+  return hash.toString(16).padStart(8, "0");
+}
+
+function fieldNumberSummary(input) {
+  return [...new Set(parseFields(input).map((field) => field.number))]
+    .sort((left, right) => left - right)
+    .join(",");
+}
+
+function bytesFieldDiagnostic(input, number) {
+  const bytes = asBytes(input);
+  const field = parseFields(bytes).find((candidate) => candidate.number === number && candidate.wireType === 2);
+  if (!field) return { present: false, length: 0, fingerprint: "-" };
+  const payload = fieldPayload(bytes, field);
+  return { present: true, length: payload.length, fingerprint: fingerprintBytes(payload) };
+}
+
+function cardTypeSummary(items) {
+  const counts = new Map();
+  for (const item of items) {
+    const type = varintField(item, 1);
+    const key = type === undefined ? "?" : String(type);
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  return [...counts.entries()].map(([type, count]) => `${type}:${count}`).join(",") || "-";
+}
+
 function dynamicDiagnosticsSnapshot(input, path) {
   if (!path.endsWith("/bilibili.app.dynamic.v2.Dynamic/DynAll") &&
       !path.endsWith("/bilibili.app.dynamic.v2.Dynamic/DynVideo")) return null;
   const reply = asBytes(input);
-  const dynamicListField = parseFields(reply).find((field) => field.number === 1 && field.wireType === 2);
+  const replyFields = parseFields(reply);
+  const dynamicListField = replyFields.find((field) => field.number === 1 && field.wireType === 2);
   if (!dynamicListField) return null;
   const dynamicList = fieldPayload(reply, dynamicListField);
-  const items = parseFields(dynamicList)
+  const listFields = parseFields(dynamicList);
+  const items = listFields
     .filter((field) => field.number === 1 && field.wireType === 2)
     .map((field) => fieldPayload(dynamicList, field));
   return {
     items: items.length,
     matched: items.filter((item) => varintField(item, 1) === 15).length,
+    cardTypes: cardTypeSummary(items),
+    updateNum: varintField(dynamicList, 2) ?? 0,
     hasMore: varintField(dynamicList, 5) === 1,
-    hasHistoryOffset: messageHasField(dynamicList, 3, 2),
-    hasUpdateBaseline: messageHasField(dynamicList, 4, 2),
+    hasMoreField: listFields.some((field) => field.number === 5 && field.wireType === 0),
+    history: bytesFieldDiagnostic(dynamicList, 3),
+    baseline: bytesFieldDiagnostic(dynamicList, 4),
+    replyFields: fieldNumberSummary(reply),
+    listFields: fieldNumberSummary(dynamicList),
+    payloadBytes: reply.length,
+    payloadFingerprint: fingerprintBytes(reply),
   };
 }
 
-async function reportDynamicDiagnostics(ctx, path, before, after) {
+function nextDynamicDiagnosticState(ctx, endpoint, historyFingerprint, bodyFingerprint) {
+  let state = { sequence: 0, endpoints: {} };
+  try {
+    state = ctx?.storage?.getJSON?.(DYNAMIC_DIAGNOSTIC_STATE_KEY) ?? state;
+  } catch (_) {
+    // A missing or unreadable state must not affect traffic.
+  }
+  const previous = state.endpoints?.[endpoint];
+  const sequence = Number(state.sequence ?? 0) + 1;
+  const historyRepeat = previous && historyFingerprint !== "-"
+    ? previous.historyFingerprint === historyFingerprint
+    : null;
+  const bodyRepeat = previous ? previous.bodyFingerprint === bodyFingerprint : null;
+  const next = {
+    sequence,
+    endpoints: {
+      ...(state.endpoints ?? {}),
+      [endpoint]: { historyFingerprint, bodyFingerprint },
+    },
+  };
+  try {
+    ctx?.storage?.setJSON?.(DYNAMIC_DIAGNOSTIC_STATE_KEY, next);
+  } catch (_) {
+    // Persistence is diagnostic-only.
+  }
+  return { sequence, historyRepeat, bodyRepeat };
+}
+
+function diagnosticValue(value) {
+  return value === null || value === undefined ? "first" : String(value);
+}
+
+async function reportDynamicDiagnostics(ctx, path, before, after, transport) {
   if (!before) return;
   const endpoint = path.endsWith("/DynVideo") ? "DynVideo" : "DynAll";
+  const state = nextDynamicDiagnosticState(
+    ctx,
+    endpoint,
+    before.history.fingerprint,
+    transport.inputFingerprint,
+  );
   const body = [
-    `cards=${before.items}`,
-    `matched=${before.matched}`,
-    `delivered=${after?.items ?? before.items}`,
-    `has_more=${before.hasMore}`,
-    `history_offset=${before.hasHistoryOffset}`,
-    `update_baseline=${before.hasUpdateBaseline}`,
-  ].join(" ");
-  console.log(`[Bilibili Clean Diagnostic] ${endpoint} ${body}`);
+    `seq=${state.sequence} endpoint=${endpoint} egern=${ctx?.app?.version ?? "?"} http=${ctx?.response?.status ?? "?"} grpc_status=${transport.grpcStatus}`,
+    `cards=${before.items} matched=${before.matched} delivered=${after?.items ?? before.items} types=${before.cardTypes} update_num=${before.updateNum}`,
+    `has_more=${before.hasMore} has_more_field=${before.hasMoreField}`,
+    `history=len:${before.history.length} fp:${before.history.fingerprint} repeat:${diagnosticValue(state.historyRepeat)}`,
+    `baseline=len:${before.baseline.length} fp:${before.baseline.fingerprint}`,
+    `wire=${transport.mode} frames=${transport.frameCount} data=${transport.dataFrames} trailers=${transport.trailerFrames} compressed=${transport.compressedFrames} encoding=${transport.encoding}`,
+    `bytes=${transport.inputBytes}->${transport.outputBytes} changed=${transport.changed} content_length=${transport.contentLength || "-"}`,
+    `body_fp=${transport.inputFingerprint}->${transport.outputFingerprint} repeat=${diagnosticValue(state.bodyRepeat)}`,
+    `payload_bytes=${before.payloadBytes}->${after?.payloadBytes ?? before.payloadBytes} payload_fp=${before.payloadFingerprint}->${after?.payloadFingerprint ?? before.payloadFingerprint}`,
+    `proto=reply[${before.replyFields}] list[${before.listFields}]`,
+  ].join("\n");
+  console.log(`[Bilibili Clean Diagnostic] ${body.split("\n").join(" | ")}`);
   if (typeof ctx?.notify !== "function") return;
   try {
-    await ctx.notify({ title: "Bilibili Clean 分页诊断", subtitle: endpoint, body, sound: false });
+    await ctx.notify({
+      title: `Bilibili 分页诊断 #${state.sequence}`,
+      subtitle: endpoint,
+      body,
+      sound: false,
+    });
   } catch (error) {
     console.log(`[Bilibili Clean Diagnostic] notification failed: ${String(error)}`);
   }
@@ -503,29 +595,50 @@ export async function cleanGrpcBody(input, path, settings, ctx, grpcEncoding = "
     const before = settings.dynamicDiagnostics ? dynamicDiagnosticsSnapshot(bytes, path) : null;
     const cleaned = cleanProtobufMessage(bytes, path, settings);
     if (settings.dynamicDiagnostics) {
-      await reportDynamicDiagnostics(ctx, path, before, dynamicDiagnosticsSnapshot(cleaned, path));
+      await reportDynamicDiagnostics(ctx, path, before, dynamicDiagnosticsSnapshot(cleaned, path), {
+        mode: "raw",
+        frameCount: 0,
+        dataFrames: 1,
+        trailerFrames: 0,
+        compressedFrames: 0,
+        encoding: grpcEncoding,
+        inputBytes: bytes.length,
+        outputBytes: cleaned.length,
+        changed: !bytesEqual(bytes, cleaned),
+        inputFingerprint: fingerprintBytes(bytes),
+        outputFingerprint: fingerprintBytes(cleaned),
+        grpcStatus: String(headerValue(ctx?.response?.headers, "grpc-status") || "-"),
+        contentLength: String(headerValue(ctx?.response?.headers, "content-length") || ""),
+      });
     }
     return cleaned;
   }
 
   const output = [];
   let changed = false;
+  let dataFrames = 0;
+  let trailerFrames = 0;
+  let compressedFrames = 0;
+  let diagnosticBefore = null;
+  let diagnosticAfter = null;
   for (const frame of frames) {
     if ((frame.flags & 0x80) !== 0) {
+      trailerFrames += 1;
       output.push(frame.raw);
       continue;
     }
 
+    dataFrames += 1;
     let payload = frame.payload;
     if ((frame.flags & 1) !== 0) {
+      compressedFrames += 1;
       payload = await decompressGrpcPayload(ctx, payload, grpcEncoding);
       if (!payload) throw new Error("failed to decompress grpc frame");
     }
     const before = settings.dynamicDiagnostics ? dynamicDiagnosticsSnapshot(payload, path) : null;
     const cleaned = cleanProtobufMessage(payload, path, settings);
-    if (settings.dynamicDiagnostics) {
-      await reportDynamicDiagnostics(ctx, path, before, dynamicDiagnosticsSnapshot(cleaned, path));
-    }
+    if (before) diagnosticBefore = before;
+    if (before) diagnosticAfter = dynamicDiagnosticsSnapshot(cleaned, path);
     if (bytesEqual(payload, cleaned)) {
       output.push(frame.raw);
       continue;
@@ -538,7 +651,25 @@ export async function cleanGrpcBody(input, path, settings, ctx, grpcEncoding = "
     }
     output.push(encodeGrpcFrame(frame.flags, encoded));
   }
-  return changed ? concatBytes(output) : bytes;
+  const result = changed ? concatBytes(output) : bytes;
+  if (settings.dynamicDiagnostics) {
+    await reportDynamicDiagnostics(ctx, path, diagnosticBefore, diagnosticAfter, {
+      mode: "framed",
+      frameCount: frames.length,
+      dataFrames,
+      trailerFrames,
+      compressedFrames,
+      encoding: grpcEncoding,
+      inputBytes: bytes.length,
+      outputBytes: result.length,
+      changed,
+      inputFingerprint: fingerprintBytes(bytes),
+      outputFingerprint: fingerprintBytes(result),
+      grpcStatus: String(headerValue(ctx?.response?.headers, "grpc-status") || "-"),
+      contentLength: String(headerValue(ctx?.response?.headers, "content-length") || ""),
+    });
+  }
+  return result;
 }
 
 function headerValue(headers, name) {
@@ -556,15 +687,23 @@ export default async function bilibiliClean(ctx) {
   const settings = settingsFromEnv(ctx?.env);
   if (!ctx?.request || !ctx?.response) return undefined;
   let originalBinary;
+  let diagnosticStage = "parse-url";
+  let diagnosticPath = "?";
+  let diagnosticEncoding = "?";
 
   try {
     const url = new URL(ctx.request.url);
+    diagnosticPath = url.pathname;
     const contentType = String(headerValue(ctx.response.headers, "content-type")).toLowerCase();
     if (contentType.includes("grpc") || contentType.includes("protobuf")) {
+      diagnosticStage = "read-grpc-body";
       const original = new Uint8Array(await ctx.response.arrayBuffer());
       originalBinary = original;
       const encoding = String(headerValue(ctx.response.headers, "grpc-encoding") || "identity").toLowerCase();
+      diagnosticEncoding = encoding;
+      diagnosticStage = "clean-grpc-body";
       const cleaned = await cleanGrpcBody(original, url.pathname, settings, ctx, encoding);
+      diagnosticStage = "return-grpc-body";
       if (bytesEqual(original, cleaned)) {
         debugLog(settings, `returned unchanged protobuf ${url.pathname}`);
         return { body: original };
@@ -573,7 +712,9 @@ export default async function bilibiliClean(ctx) {
       return { body: cleaned };
     }
 
+    diagnosticStage = "read-json-body";
     const body = await ctx.response.json();
+    diagnosticStage = "clean-json-body";
     const before = JSON.stringify(body);
     cleanJsonBody(body, url, settings);
     const after = JSON.stringify(body);
@@ -584,9 +725,21 @@ export default async function bilibiliClean(ctx) {
     debugLog(settings, "fail-open", error);
     if (settings.dynamicDiagnostics && typeof ctx?.notify === "function") {
       try {
+        const endpoint = diagnosticPath.split("/").pop() || "?";
+        const errorName = String(error?.name || "Error").replace(/[\r\n]+/g, " ").slice(0, 60);
+        const errorMessage = String(error?.message || error).replace(/[\r\n]+/g, " ").slice(0, 180);
+        const capturedBytes = originalBinary?.length ?? 0;
+        const diagnosticBody = [
+          `stage=${diagnosticStage} endpoint=${endpoint}`,
+          `error=${errorName} message=${errorMessage}`,
+          `egern=${ctx?.app?.version ?? "?"} http=${ctx?.response?.status ?? "?"} encoding=${diagnosticEncoding}`,
+          `captured_bytes=${capturedBytes} body_fp=${originalBinary ? fingerprintBytes(originalBinary) : "-"}`,
+          `fallback=${originalBinary ? "return-original-body" : "passthrough-without-read"}`,
+        ].join("\n");
         await ctx.notify({
           title: "Bilibili Clean 分页诊断异常",
-          body: `fail-open: ${String(error)}`,
+          subtitle: endpoint,
+          body: diagnosticBody,
           sound: false,
         });
       } catch (_) {

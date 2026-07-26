@@ -1,5 +1,5 @@
 name: Bilibili Clean 分页诊断（临时）
-description: 基于当前正式版，增加动态分页脱敏计数，并验证读取后显式回填原始 gRPC body；测试后请删除。
+description: 基于当前正式版，输出完整脱敏分页、游标、gRPC 帧与响应指纹诊断，并验证原始 body 回填；测试后请删除。
 author: egern-rule-artifacts
 icon: shield.lefthalf.filled
 
@@ -20,8 +20,8 @@ env_schema:
     default_value: "false"
     options: ["true", "false"]
   DYNAMIC_DIAGNOSTICS:
-    name: 动态计数诊断
-    description: 通过 iOS 通知输出卡片数、广告命中数和分页状态，不包含正文或账号信息。
+    name: 完整动态诊断
+    description: 通过 iOS 通知输出分页、短指纹、帧、压缩、字节及 protobuf 结构；不含正文、账号或游标原值。
     default_value: "true"
     options: ["true", "false"]
   CLEAN_COMMAND_DMS:
