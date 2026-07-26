@@ -39,7 +39,7 @@ scriptings:
 - http_response:
     name: Bilibili Clean JSON
     match: ^https:\/\/(?:app\.bilibili\.com|app\.biliapi\.net|api\.bilibili\.com|api\.biliapi\.net|api\.live\.bilibili\.com)\/(?:x\/v2\/(?:splash\/(?:show|list|brand\/list|event\/list2)|feed\/index(?:\/story)?|search\/square)|pgc\/page\/(?:bangumi|cinema\/tab)|x\/web-interface\/wbi\/index\/top\/feed\/rcmd|xlive\/app-room\/v1\/index\/getInfoByRoom)(?:\?|$)
-    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/b5defcdb8b80bdbc6d82ad904944be1952ac2be6/generated/Egern/Scripts/Bilibili_Clean.mjs
+    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/8deaf47ad9bd36252fadd637b187fcb2e0c5488a/generated/Egern/Scripts/Bilibili_Clean.mjs
     update_interval: 86400
     max_size: 8388608
     timeout: 10
@@ -48,7 +48,7 @@ scriptings:
 - http_response:
     name: Bilibili Clean gRPC
     match: ^https:\/\/(?:grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com)\/bilibili\.(?:app\.dynamic\.v2\.Dynamic\/(?:DynAll|DynVideo)|app\.view\.v1\.View\/(?:View|TFInfo)|app\.viewunite\.v1\.View\/(?:View|RelatesFeed)|community\.service\.dm\.v1\.DM\/DmView|main\.community\.reply\.v1\.Reply\/MainList|polymer\.app\.search\.v1\.Search\/SearchAll)(?:\?|$)
-    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/b5defcdb8b80bdbc6d82ad904944be1952ac2be6/generated/Egern/Scripts/Bilibili_Clean.mjs
+    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/8deaf47ad9bd36252fadd637b187fcb2e0c5488a/generated/Egern/Scripts/Bilibili_Clean.mjs
     update_interval: 86400
     max_size: 8388608
     timeout: 10
