@@ -59,12 +59,21 @@ export function settingsFromEnv(env = {}) {
     showMineAudio: envBoolean(env, "SHOW_MINE_AUDIO", true),
     showMineTeen: envBoolean(env, "SHOW_MINE_TEEN", true),
     showMineSupport: envBoolean(env, "SHOW_MINE_SUPPORT", true),
+    showMineComics: envBoolean(env, "SHOW_MINE_COMICS", true),
+    showMineCommunity: envBoolean(env, "SHOW_MINE_COMMUNITY", true),
+    showMineCharity: envBoolean(env, "SHOW_MINE_CHARITY", true),
+    showMineWorkshop: envBoolean(env, "SHOW_MINE_WORKSHOP", true),
+    showMineSettings: envBoolean(env, "SHOW_MINE_SETTINGS", true),
+    showMineCreatorHome: envBoolean(env, "SHOW_MINE_CREATOR_HOME", true),
+    showMineManuscript: envBoolean(env, "SHOW_MINE_MANUSCRIPT", true),
+    showMineCreatorIncentive: envBoolean(env, "SHOW_MINE_CREATOR_INCENTIVE", true),
     showMineCreatorSection: envBoolean(env, "SHOW_MINE_CREATOR_SECTION", true),
     showMineRecommendSection: envBoolean(env, "SHOW_MINE_RECOMMEND_SECTION", true),
     showMineMoreSection: envBoolean(env, "SHOW_MINE_MORE_SECTION", true),
     mineHideItems: envList(env, "MINE_HIDE_ITEMS"),
     mineHideSections: envList(env, "MINE_HIDE_SECTIONS"),
     mineHideBlocks: envList(env, "MINE_HIDE_BLOCKS"),
+    mineDiagnostics: envBoolean(env, "MINE_DIAGNOSTICS", false),
     removeDynamicAdParam: envBoolean(env, "REMOVE_DYNAMIC_AD_PARAM", true),
     dynamicRequestDiagnostics: envBoolean(env, "DYNAMIC_REQUEST_DIAGNOSTICS", false),
     debug: envBoolean(env, "DEBUG", false),
@@ -230,17 +239,25 @@ const MINE_ITEM_SETTING_RULES = [
   ["showMineDress", new Set([402]), ["个性装扮"]],
   ["showMineGame", new Set([403, 2542]), ["游戏中心", "我的游戏"]],
   ["showMineWallet", new Set([404, 741, 791]), ["我的钱包"]],
-  ["showMineLive", new Set([406, 707, 708, 709, 710, 792]), ["直播中心", "主播中心", "主播活动", "开播福利", "我的直播"]],
-  ["showMinePromotions", new Set([174, 423, 533, 990]), ["有奖活动", "任务中心", "邀好友赚红包", "能量加油站"]],
-  ["showMineMall", new Set([622]), ["会员购中心"]],
+  ["showMineLive", new Set([406, 707, 708, 709, 710, 792]), ["直播中心", "主播中心", "主播活动", "开播福利", "我的直播", "直播数据"]],
+  ["showMinePromotions", new Set([174, 423, 533, 990]), ["有奖活动", "任务中心", "邀好友赚红包", "能量加油站", "必火推广", "BW乐园", "B萌投票"]],
+  ["showMineMall", new Set([622]), ["会员购中心", "会员购订单"]],
   ["showMineAudio", new Set([812]), ["听视频"]],
   ["showMineTeen", new Set([950, 964, 1070]), ["青少年模式", "青少年守护"]],
   ["showMineSupport", new Set([407, 797]), ["联系客服", "我的客服"]],
+  ["showMineComics", new Set(), ["漫画"]],
+  ["showMineCommunity", new Set(), ["社区中心"]],
+  ["showMineCharity", new Set(), ["哔哩哔哩公益"]],
+  ["showMineWorkshop", new Set(), ["工房"]],
+  ["showMineSettings", new Set([410, 798]), ["设置"]],
+  ["showMineCreatorHome", new Set(), ["创作中心"]],
+  ["showMineManuscript", new Set(), ["稿件管理"]],
+  ["showMineCreatorIncentive", new Set(), ["创作激励"]],
 ];
 
 const MINE_SECTION_SETTING_RULES = [
   ["showMineCreatorSection", ["创作中心"]],
-  ["showMineRecommendSection", ["推荐服务"]],
+  ["showMineRecommendSection", ["推荐服务", "我的服务"]],
   ["showMineMoreSection", ["更多服务"]],
 ];
 
@@ -298,6 +315,65 @@ function cleanMinePage(body, settings) {
   }
 }
 
+function isMinePath(path) {
+  return path === "/x/v2/account/mine" ||
+    path === "/x/v2/account/mine/ipad" ||
+    path === "/x/v2/account/myinfo";
+}
+
+function diagnosticValue(value) {
+  if (Array.isArray(value)) return `array(${value.length})`;
+  if (isObject(value)) return `object(${Object.keys(value).length})`;
+  if (value === null) return "null";
+  return typeof value;
+}
+
+export function summarizeMineResponse(body, path) {
+  const data = body?.data;
+  const lines = [`path=${path}`, `code=${String(body?.code ?? "-")}`];
+  if (!isObject(data)) {
+    lines.push(`data=${diagnosticValue(data)}`);
+    return lines.join("\n");
+  }
+
+  const keys = Object.keys(data).sort();
+  lines.push(`data_keys=${keys.join(",") || "-"}`);
+  lines.push(`data_shapes=${keys.map((key) => `${key}:${diagnosticValue(data[key])}`).join(",") || "-"}`);
+
+  const arrays = [];
+  const sections = [];
+  const visit = (value, currentPath, depth) => {
+    if (depth > 3) return;
+    if (Array.isArray(value)) {
+      arrays.push(`${currentPath}:${value.length}`);
+      if (/section/iu.test(currentPath)) {
+        for (const section of value.slice(0, 12)) {
+          if (!isObject(section)) continue;
+          const title = String(section.title ?? section.up_title ?? section.name ?? "-").slice(0, 32);
+          const items = Array.isArray(section.items) ? section.items : null;
+          const sample = items
+            ?.slice(0, 12)
+            .map((item) => String(item?.title ?? item?.name ?? item?.id ?? "-").slice(0, 24))
+            .join("|");
+          sections.push(`${title}[${items?.length ?? "-"}]${sample ? `{${sample}}` : ""}`);
+        }
+      }
+      for (let index = 0; index < Math.min(value.length, 3); index += 1) {
+        visit(value[index], `${currentPath}[${index}]`, depth + 1);
+      }
+      return;
+    }
+    if (!isObject(value)) return;
+    for (const [key, child] of Object.entries(value)) {
+      if (Array.isArray(child) || isObject(child)) visit(child, `${currentPath}.${key}`, depth + 1);
+    }
+  };
+  visit(data, "data", 0);
+  lines.push(`arrays=${arrays.slice(0, 30).join(",") || "-"}`);
+  lines.push(`sections=${sections.slice(0, 20).join(";") || "-"}`);
+  return lines.join("\n").slice(0, 3500);
+}
+
 export function cleanJsonBody(body, urlLike, settings = settingsFromEnv()) {
   const url = urlLike instanceof URL ? urlLike : new URL(urlLike);
   const path = url.pathname;
@@ -313,7 +389,7 @@ export function cleanJsonBody(body, urlLike, settings = settingsFromEnv()) {
     }
   } else if (path === "/x/resource/show/tab/v2") {
     cleanBottomTabs(body, settings);
-  } else if (path === "/x/v2/account/mine" || path === "/x/v2/account/mine/ipad") {
+  } else if (isMinePath(path)) {
     cleanMinePage(body, settings);
   } else if (path === "/x/v2/feed/index" || path === "/x/v2/feed/index/story") {
     if (isObject(body?.data)) body.data.items = cleanFeedItems(body.data.items, settings);
@@ -775,8 +851,19 @@ export default async function bilibiliClean(ctx) {
 
     const body = await ctx.response.json();
     const before = JSON.stringify(body);
+    const mineSummary = settings.mineDiagnostics && isMinePath(url.pathname)
+      ? summarizeMineResponse(body, url.pathname)
+      : null;
     cleanJsonBody(body, url, settings);
     const after = JSON.stringify(body);
+    if (mineSummary && typeof ctx.notify === "function") {
+      await ctx.notify({
+        title: "Bilibili 我的页诊断",
+        subtitle: before === after ? "响应已命中，未发生清理" : "响应已命中并完成清理",
+        body: `host=${url.hostname}\n${mineSummary}\nclean_changed=${before !== after}`,
+        sound: false,
+      });
+    }
     if (before === after) return undefined;
     debugLog(settings, `cleaned json ${url.pathname}`);
     return { body };

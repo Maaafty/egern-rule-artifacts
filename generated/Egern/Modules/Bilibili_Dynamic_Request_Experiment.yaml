@@ -24,7 +24,7 @@ scriptings:
 - http_request:
     name: Bilibili DynAll 请求去广告实验
     match: ^https:\/\/(?:grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com)\/bilibili\.app\.dynamic\.v2\.Dynamic\/DynAll(?:\?|$)
-    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/main/generated/Egern/Scripts/Bilibili_Clean.mjs?v=20260726-3
+    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/main/generated/Egern/Scripts/Bilibili_Clean.mjs?v=20260726-4
     update_interval: 86400
     max_size: 1048576
     timeout: 10
