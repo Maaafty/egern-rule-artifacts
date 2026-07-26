@@ -1,5 +1,5 @@
 name: Bilibili Clean
-description: 原生 Egern 哔哩哔哩去广告模块，同时处理 JSON 与 gRPC/protobuf 响应；异常时原样放行。
+description: 原生 Egern 哔哩哔哩净化与界面定制模块，同时处理 JSON 与 gRPC/protobuf 响应；异常时原样放行。
 author: egern-rule-artifacts
 icon: shield.lefthalf.filled
 
@@ -14,16 +14,63 @@ env_schema:
     description: 隐藏游戏、购物、活动横幅和大会员推广等商业入口。
     default_value: "true"
     options: ["true", "false"]
-  CLEAN_DYNAMIC_EXTRAS:
-    name: 精简动态页
-    description: 同时隐藏动态页热门话题和最常访问；默认保留。
-    default_value: "false"
-    options: ["true", "false"]
   CLEAN_COMMAND_DMS:
     name: 清理互动弹幕
     description: 隐藏投票、评分、关注等互动式弹幕。
     default_value: "true"
     options: ["true", "false"]
+  SHOW_TAB_HOME:
+    name: 底栏：首页
+    description: 是否显示底部导航栏的首页按钮。
+    default_value: "true"
+    options: ["true", "false"]
+  SHOW_TAB_CHANNEL:
+    name: 底栏：频道
+    description: 是否显示底部导航栏的频道按钮（仅在服务端下发时生效）。
+    default_value: "true"
+    options: ["true", "false"]
+  SHOW_TAB_DYNAMIC:
+    name: 底栏：动态
+    description: 是否显示底部导航栏的动态按钮。
+    default_value: "true"
+    options: ["true", "false"]
+  SHOW_TAB_PUBLISH:
+    name: 底栏：发布
+    description: 是否显示底部导航栏中央的发布按钮。
+    default_value: "true"
+    options: ["true", "false"]
+  SHOW_TAB_PGC:
+    name: 底栏：番剧/影视
+    description: 是否显示底部导航栏的节目、番剧或影视按钮。
+    default_value: "true"
+    options: ["true", "false"]
+  SHOW_TAB_MALL:
+    name: 底栏：会员购
+    description: 是否显示底部导航栏的会员购按钮。
+    default_value: "true"
+    options: ["true", "false"]
+  SHOW_TAB_MESSAGES:
+    name: 底栏：消息
+    description: 是否显示底部导航栏的消息按钮（仅在服务端下发时生效）。
+    default_value: "true"
+    options: ["true", "false"]
+  SHOW_TAB_MINE:
+    name: 底栏：我的
+    description: 是否显示底部导航栏的我的按钮。
+    default_value: "true"
+    options: ["true", "false"]
+  MINE_HIDE_ITEMS:
+    name: 我的页：隐藏项目
+    description: 用逗号分隔名称、数字 ID 或链接片段，例如 游戏中心,会员购,423；留空不隐藏。
+    default_value: ""
+  MINE_HIDE_SECTIONS:
+    name: 我的页：隐藏分区
+    description: 用逗号分隔分区标题或 ID，例如 创作中心,推荐服务；留空不隐藏。
+    default_value: ""
+  MINE_HIDE_BLOCKS:
+    name: 我的页：隐藏顶层区块
+    description: 高级选项；用逗号分隔响应字段名，例如 vip_section,live_tip；留空不隐藏。
+    default_value: ""
   DEBUG:
     name: 调试日志
     description: 仅排查问题时开启，不记录响应正文。
@@ -33,7 +80,7 @@ env_schema:
 scriptings:
 - http_response:
     name: Bilibili Clean JSON
-    match: ^https:\/\/(?:app\.bilibili\.com|app\.biliapi\.net|api\.bilibili\.com|api\.biliapi\.net|api\.live\.bilibili\.com)\/(?:x\/v2\/(?:splash\/(?:show|list|brand\/list|event\/list2)|feed\/index(?:\/story)?|search\/square)|pgc\/page\/(?:bangumi|cinema\/tab)|x\/web-interface\/wbi\/index\/top\/feed\/rcmd|xlive\/app-room\/v1\/index\/getInfoByRoom)(?:\?|$)
+    match: ^https:\/\/(?:app\.bilibili\.com|app\.biliapi\.net|api\.bilibili\.com|api\.biliapi\.net|api\.live\.bilibili\.com)\/(?:x\/resource\/show\/tab\/v2|x\/v2\/(?:account\/mine(?:\/ipad)?|splash\/(?:show|list|brand\/list|event\/list2)|feed\/index(?:\/story)?|search\/square)|pgc\/page\/(?:bangumi|cinema\/tab)|x\/web-interface\/wbi\/index\/top\/feed\/rcmd|xlive\/app-room\/v1\/index\/getInfoByRoom)(?:\?|$)
     script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/main/generated/Egern/Scripts/Bilibili_Clean.mjs
     update_interval: 86400
     max_size: 8388608
@@ -42,7 +89,7 @@ scriptings:
     binary_body: false
 - http_response:
     name: Bilibili Clean gRPC
-    match: ^https:\/\/(?:grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com)\/bilibili\.(?:app\.dynamic\.v2\.Dynamic\/(?:DynAll|DynVideo)|app\.view\.v1\.View\/(?:View|TFInfo)|app\.viewunite\.v1\.View\/(?:View|RelatesFeed)|community\.service\.dm\.v1\.DM\/DmView|main\.community\.reply\.v1\.Reply\/MainList|polymer\.app\.search\.v1\.Search\/SearchAll)(?:\?|$)
+    match: ^https:\/\/(?:grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com)\/bilibili\.(?:app\.view\.v1\.View\/(?:View|TFInfo)|app\.viewunite\.v1\.View\/(?:View|RelatesFeed)|community\.service\.dm\.v1\.DM\/DmView|main\.community\.reply\.v1\.Reply\/MainList|polymer\.app\.search\.v1\.Search\/SearchAll)(?:\?|$)
     script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/main/generated/Egern/Scripts/Bilibili_Clean.mjs
     update_interval: 86400
     max_size: 8388608

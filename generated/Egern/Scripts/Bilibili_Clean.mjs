@@ -21,12 +21,32 @@ function envBoolean(env, key, fallback) {
   return !["0", "false", "no", "off"].includes(String(value).toLowerCase());
 }
 
+function envList(env, key) {
+  const value = env?.[key];
+  if (value === undefined || value === null || value === "") return [];
+  return String(value)
+    .split(/[\n,，;；|]+/u)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 export function settingsFromEnv(env = {}) {
   return {
     cleanHotSearch: envBoolean(env, "CLEAN_HOT_SEARCH", true),
     cleanPromotionModules: envBoolean(env, "CLEAN_PROMOTION_MODULES", true),
     cleanDynamicExtras: envBoolean(env, "CLEAN_DYNAMIC_EXTRAS", false),
     cleanCommandDms: envBoolean(env, "CLEAN_COMMAND_DMS", true),
+    showTabHome: envBoolean(env, "SHOW_TAB_HOME", true),
+    showTabChannel: envBoolean(env, "SHOW_TAB_CHANNEL", true),
+    showTabDynamic: envBoolean(env, "SHOW_TAB_DYNAMIC", true),
+    showTabPublish: envBoolean(env, "SHOW_TAB_PUBLISH", true),
+    showTabPgc: envBoolean(env, "SHOW_TAB_PGC", true),
+    showTabMall: envBoolean(env, "SHOW_TAB_MALL", true),
+    showTabMessages: envBoolean(env, "SHOW_TAB_MESSAGES", true),
+    showTabMine: envBoolean(env, "SHOW_TAB_MINE", true),
+    mineHideItems: envList(env, "MINE_HIDE_ITEMS"),
+    mineHideSections: envList(env, "MINE_HIDE_SECTIONS"),
+    mineHideBlocks: envList(env, "MINE_HIDE_BLOCKS"),
     debug: envBoolean(env, "DEBUG", false),
   };
 }
@@ -112,6 +132,103 @@ function cleanPgcModules(modules, settings) {
   return modules;
 }
 
+function normalizedText(value) {
+  return String(value ?? "").trim().toLowerCase().replace(/\s+/gu, "");
+}
+
+function searchableValues(item, keys) {
+  if (!isObject(item)) return [];
+  return keys.map((key) => normalizedText(item[key])).filter(Boolean);
+}
+
+function matchesTokenList(item, tokens, keys) {
+  if (!Array.isArray(tokens) || tokens.length === 0) return false;
+  const values = searchableValues(item, keys);
+  return tokens.some((rawToken) => {
+    const token = normalizedText(rawToken);
+    if (!token) return false;
+    if (/^\d+$/u.test(token)) return normalizedText(item?.id) === token;
+    return values.some((value) => value.includes(token));
+  });
+}
+
+function bottomTabSetting(item) {
+  const tabId = normalizedText(item?.tab_id);
+  const name = normalizedText(item?.name);
+  const uri = normalizedText(item?.uri);
+  if (tabId === "home" || name === "首页" || uri.startsWith("bilibili://main/home")) return "showTabHome";
+  if (tabId === "频道bottom" || name === "频道" || uri.startsWith("bilibili://pegasus/channel")) {
+    return "showTabChannel";
+  }
+  if (tabId === "dynamic" || name === "动态" || uri.startsWith("bilibili://following/home/")) {
+    return "showTabDynamic";
+  }
+  if (tabId === "publish" || name === "发布" || uri.includes("center_plus")) return "showTabPublish";
+  if (
+    ["ogv", "番剧", "影视"].includes(tabId) ||
+    ["节目", "番剧", "影视"].includes(name) ||
+    uri.includes("home_bottom_tab_activity_tab")
+  ) {
+    return "showTabPgc";
+  }
+  if (tabId === "会员购bottom" || name === "会员购" || uri.startsWith("bilibili://mall")) {
+    return "showTabMall";
+  }
+  if (tabId === "消息bottom" || name === "消息" || uri.startsWith("bilibili://link/im_home")) {
+    return "showTabMessages";
+  }
+  if (tabId === "我的bottom" || name === "我的" || uri.startsWith("bilibili://user_center")) {
+    return "showTabMine";
+  }
+  return null;
+}
+
+function cleanBottomTabs(body, settings) {
+  const tabs = body?.data?.bottom;
+  if (!Array.isArray(tabs)) return;
+
+  const filtered = tabs.filter((item) => {
+    const setting = bottomTabSetting(item);
+    return setting === null || settings[setting] !== false;
+  });
+
+  // Keep navigation usable if every known button was disabled accidentally.
+  if (!filtered.some((item) => bottomTabSetting(item) !== null)) return;
+  body.data.bottom = filtered.map((item, index) => ({ ...item, pos: index + 1 }));
+}
+
+const MINE_ITEM_KEYS = ["id", "title", "name", "text", "label", "uri", "url"];
+const MINE_SECTION_KEYS = ["id", "title", "up_title", "name", "type", "style"];
+
+function cleanMineItemList(items, settings) {
+  if (!Array.isArray(items)) return items;
+  return items.filter((item) => !matchesTokenList(item, settings.mineHideItems, MINE_ITEM_KEYS));
+}
+
+function cleanMinePage(body, settings) {
+  if (!isObject(body?.data)) return;
+
+  const hiddenBlocks = new Set((settings.mineHideBlocks ?? []).map(normalizedText));
+  for (const key of Object.keys(body.data)) {
+    if (hiddenBlocks.has(normalizedText(key))) delete body.data[key];
+  }
+
+  for (const key of ["sections_v2", "sections"]) {
+    if (!Array.isArray(body.data[key])) continue;
+    body.data[key] = body.data[key]
+      .filter((section) => !matchesTokenList(section, settings.mineHideSections, MINE_SECTION_KEYS))
+      .map((section) => {
+        if (!isObject(section) || !Array.isArray(section.items)) return section;
+        return { ...section, items: cleanMineItemList(section.items, settings) };
+      })
+      .filter((section) => !isObject(section) || !Array.isArray(section.items) || section.items.length > 0);
+  }
+
+  for (const key of ["ipad_upper_sections", "ipad_recommend_sections", "ipad_more_sections"]) {
+    if (Array.isArray(body.data[key])) body.data[key] = cleanMineItemList(body.data[key], settings);
+  }
+}
+
 export function cleanJsonBody(body, urlLike, settings = settingsFromEnv()) {
   const url = urlLike instanceof URL ? urlLike : new URL(urlLike);
   const path = url.pathname;
@@ -125,6 +242,10 @@ export function cleanJsonBody(body, urlLike, settings = settingsFromEnv()) {
     if (isObject(body?.data)) {
       for (const key of ["account", "event_list", "preload", "show"]) delete body.data[key];
     }
+  } else if (path === "/x/resource/show/tab/v2") {
+    cleanBottomTabs(body, settings);
+  } else if (path === "/x/v2/account/mine" || path === "/x/v2/account/mine/ipad") {
+    cleanMinePage(body, settings);
   } else if (path === "/x/v2/feed/index" || path === "/x/v2/feed/index/story") {
     if (isObject(body?.data)) body.data.items = cleanFeedItems(body.data.items, settings);
   } else if (path === "/x/v2/search/square") {
