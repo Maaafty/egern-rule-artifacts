@@ -1,5 +1,5 @@
-name: Bilibili Clean
-description: 原生 Egern 哔哩哔哩去广告模块，同时处理 JSON 与 gRPC/protobuf 响应；异常时原样放行。
+name: Bilibili Clean 分页诊断（临时）
+description: 基于当前正式版，仅增加动态分页脱敏计数通知；测试完成后请删除。
 author: egern-rule-artifacts
 icon: shield.lefthalf.filled
 
@@ -19,6 +19,11 @@ env_schema:
     description: 同时隐藏动态页热门话题和最常访问；默认保留。
     default_value: "false"
     options: ["true", "false"]
+  DYNAMIC_DIAGNOSTICS:
+    name: 动态计数诊断
+    description: 通过 iOS 通知输出卡片数、广告命中数和分页状态，不包含正文或账号信息。
+    default_value: "true"
+    options: ["true", "false"]
   CLEAN_COMMAND_DMS:
     name: 清理互动弹幕
     description: 隐藏投票、评分、关注等互动式弹幕。
@@ -34,7 +39,7 @@ scriptings:
 - http_response:
     name: Bilibili Clean JSON
     match: ^https:\/\/(?:app\.bilibili\.com|app\.biliapi\.net|api\.bilibili\.com|api\.biliapi\.net|api\.live\.bilibili\.com)\/(?:x\/v2\/(?:splash\/(?:show|list|brand\/list|event\/list2)|feed\/index(?:\/story)?|search\/square)|pgc\/page\/(?:bangumi|cinema\/tab)|x\/web-interface\/wbi\/index\/top\/feed\/rcmd|xlive\/app-room\/v1\/index\/getInfoByRoom)(?:\?|$)
-    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/main/generated/Egern/Scripts/Bilibili_Clean.mjs
+    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/codex/bilibili-pagination-diagnostic/generated/Egern/Scripts/Bilibili_Clean.mjs
     update_interval: 86400
     max_size: 8388608
     timeout: 10
@@ -43,7 +48,7 @@ scriptings:
 - http_response:
     name: Bilibili Clean gRPC
     match: ^https:\/\/(?:grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com)\/bilibili\.(?:app\.dynamic\.v2\.Dynamic\/(?:DynAll|DynVideo)|app\.view\.v1\.View\/(?:View|TFInfo)|app\.viewunite\.v1\.View\/(?:View|RelatesFeed)|community\.service\.dm\.v1\.DM\/DmView|main\.community\.reply\.v1\.Reply\/MainList|polymer\.app\.search\.v1\.Search\/SearchAll)(?:\?|$)
-    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/main/generated/Egern/Scripts/Bilibili_Clean.mjs
+    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/codex/bilibili-pagination-diagnostic/generated/Egern/Scripts/Bilibili_Clean.mjs
     update_interval: 86400
     max_size: 8388608
     timeout: 10

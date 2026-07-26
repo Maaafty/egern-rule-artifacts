@@ -26,6 +26,7 @@ export function settingsFromEnv(env = {}) {
     cleanHotSearch: envBoolean(env, "CLEAN_HOT_SEARCH", true),
     cleanPromotionModules: envBoolean(env, "CLEAN_PROMOTION_MODULES", true),
     cleanDynamicExtras: envBoolean(env, "CLEAN_DYNAMIC_EXTRAS", false),
+    dynamicDiagnostics: envBoolean(env, "DYNAMIC_DIAGNOSTICS", true),
     cleanCommandDms: envBoolean(env, "CLEAN_COMMAND_DMS", true),
     debug: envBoolean(env, "DEBUG", false),
   };
@@ -456,10 +457,56 @@ async function compressGrpcPayload(ctx, payload, encoding) {
   throw new Error(`unsupported grpc encoding: ${encoding || "unknown"}`);
 }
 
+function dynamicDiagnosticsSnapshot(input, path) {
+  if (!path.endsWith("/bilibili.app.dynamic.v2.Dynamic/DynAll") &&
+      !path.endsWith("/bilibili.app.dynamic.v2.Dynamic/DynVideo")) return null;
+  const reply = asBytes(input);
+  const dynamicListField = parseFields(reply).find((field) => field.number === 1 && field.wireType === 2);
+  if (!dynamicListField) return null;
+  const dynamicList = fieldPayload(reply, dynamicListField);
+  const items = parseFields(dynamicList)
+    .filter((field) => field.number === 1 && field.wireType === 2)
+    .map((field) => fieldPayload(dynamicList, field));
+  return {
+    items: items.length,
+    matched: items.filter((item) => varintField(item, 1) === 15).length,
+    hasMore: varintField(dynamicList, 5) === 1,
+    hasHistoryOffset: messageHasField(dynamicList, 3, 2),
+    hasUpdateBaseline: messageHasField(dynamicList, 4, 2),
+  };
+}
+
+async function reportDynamicDiagnostics(ctx, path, before, after) {
+  if (!before) return;
+  const endpoint = path.endsWith("/DynVideo") ? "DynVideo" : "DynAll";
+  const body = [
+    `cards=${before.items}`,
+    `matched=${before.matched}`,
+    `delivered=${after?.items ?? before.items}`,
+    `has_more=${before.hasMore}`,
+    `history_offset=${before.hasHistoryOffset}`,
+    `update_baseline=${before.hasUpdateBaseline}`,
+  ].join(" ");
+  console.log(`[Bilibili Clean Diagnostic] ${endpoint} ${body}`);
+  if (typeof ctx?.notify !== "function") return;
+  try {
+    await ctx.notify({ title: "Bilibili Clean 分页诊断", subtitle: endpoint, body, sound: false });
+  } catch (error) {
+    console.log(`[Bilibili Clean Diagnostic] notification failed: ${String(error)}`);
+  }
+}
+
 export async function cleanGrpcBody(input, path, settings, ctx, grpcEncoding = "identity") {
   const bytes = asBytes(input);
   const frames = parseGrpcFrames(bytes);
-  if (!frames) return cleanProtobufMessage(bytes, path, settings);
+  if (!frames) {
+    const before = settings.dynamicDiagnostics ? dynamicDiagnosticsSnapshot(bytes, path) : null;
+    const cleaned = cleanProtobufMessage(bytes, path, settings);
+    if (settings.dynamicDiagnostics) {
+      await reportDynamicDiagnostics(ctx, path, before, dynamicDiagnosticsSnapshot(cleaned, path));
+    }
+    return cleaned;
+  }
 
   const output = [];
   let changed = false;
@@ -474,7 +521,11 @@ export async function cleanGrpcBody(input, path, settings, ctx, grpcEncoding = "
       payload = await decompressGrpcPayload(ctx, payload, grpcEncoding);
       if (!payload) throw new Error("failed to decompress grpc frame");
     }
+    const before = settings.dynamicDiagnostics ? dynamicDiagnosticsSnapshot(payload, path) : null;
     const cleaned = cleanProtobufMessage(payload, path, settings);
+    if (settings.dynamicDiagnostics) {
+      await reportDynamicDiagnostics(ctx, path, before, dynamicDiagnosticsSnapshot(cleaned, path));
+    }
     if (bytesEqual(payload, cleaned)) {
       output.push(frame.raw);
       continue;
@@ -497,7 +548,7 @@ function headerValue(headers, name) {
 }
 
 function debugLog(settings, message, error) {
-  if (!settings.debug) return;
+  if (!settings.debug && !settings.dynamicDiagnostics) return;
   console.log(`[Bilibili Clean] ${message}${error ? `: ${String(error)}` : ""}`);
 }
 
@@ -526,6 +577,17 @@ export default async function bilibiliClean(ctx) {
     return { body };
   } catch (error) {
     debugLog(settings, "fail-open", error);
+    if (settings.dynamicDiagnostics && typeof ctx?.notify === "function") {
+      try {
+        await ctx.notify({
+          title: "Bilibili Clean 分页诊断异常",
+          body: `fail-open: ${String(error)}`,
+          sound: false,
+        });
+      } catch (_) {
+        // Notification failures must not affect the original response.
+      }
+    }
     return undefined;
   }
 }
