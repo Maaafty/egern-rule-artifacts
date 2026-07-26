@@ -555,15 +555,20 @@ function debugLog(settings, message, error) {
 export default async function bilibiliClean(ctx) {
   const settings = settingsFromEnv(ctx?.env);
   if (!ctx?.request || !ctx?.response) return undefined;
+  let originalBinary;
 
   try {
     const url = new URL(ctx.request.url);
     const contentType = String(headerValue(ctx.response.headers, "content-type")).toLowerCase();
     if (contentType.includes("grpc") || contentType.includes("protobuf")) {
       const original = new Uint8Array(await ctx.response.arrayBuffer());
+      originalBinary = original;
       const encoding = String(headerValue(ctx.response.headers, "grpc-encoding") || "identity").toLowerCase();
       const cleaned = await cleanGrpcBody(original, url.pathname, settings, ctx, encoding);
-      if (bytesEqual(original, cleaned)) return undefined;
+      if (bytesEqual(original, cleaned)) {
+        debugLog(settings, `returned unchanged protobuf ${url.pathname}`);
+        return { body: original };
+      }
       debugLog(settings, `cleaned protobuf ${url.pathname}`);
       return { body: cleaned };
     }
@@ -588,6 +593,6 @@ export default async function bilibiliClean(ctx) {
         // Notification failures must not affect the original response.
       }
     }
-    return undefined;
+    return originalBinary ? { body: originalBinary } : undefined;
   }
 }

@@ -1,5 +1,5 @@
 name: Bilibili Clean 分页诊断（临时）
-description: 基于当前正式版，仅增加动态分页脱敏计数通知；测试完成后请删除。
+description: 基于当前正式版，增加动态分页脱敏计数，并验证读取后显式回填原始 gRPC body；测试后请删除。
 author: egern-rule-artifacts
 icon: shield.lefthalf.filled
 
