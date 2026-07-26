@@ -1,4 +1,4 @@
-name: Bilibili Clean
+name: Bilibili Clean v2
 description: 原生 Egern 哔哩哔哩净化与界面定制模块，同时处理 JSON 与 gRPC/protobuf 响应；异常时原样放行。
 author: egern-rule-artifacts
 icon: shield.lefthalf.filled
@@ -81,7 +81,7 @@ scriptings:
 - http_response:
     name: Bilibili Clean JSON
     match: ^https:\/\/(?:app\.bilibili\.com|app\.biliapi\.net|api\.bilibili\.com|api\.biliapi\.net|api\.live\.bilibili\.com)\/(?:x\/resource\/show\/tab\/v2|x\/v2\/(?:account\/mine(?:\/ipad)?|splash\/(?:show|list|brand\/list|event\/list2)|feed\/index(?:\/story)?|search\/square)|pgc\/page\/(?:bangumi|cinema\/tab)|x\/web-interface\/wbi\/index\/top\/feed\/rcmd|xlive\/app-room\/v1\/index\/getInfoByRoom)(?:\?|$)
-    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/main/generated/Egern/Scripts/Bilibili_Clean.mjs
+    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/main/generated/Egern/Scripts/Bilibili_Clean.mjs?v=20260726-2
     update_interval: 86400
     max_size: 8388608
     timeout: 10
@@ -90,7 +90,7 @@ scriptings:
 - http_response:
     name: Bilibili Clean gRPC
     match: ^https:\/\/(?:grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com)\/bilibili\.(?:app\.view\.v1\.View\/(?:View|TFInfo)|app\.viewunite\.v1\.View\/(?:View|RelatesFeed)|community\.service\.dm\.v1\.DM\/DmView|main\.community\.reply\.v1\.Reply\/MainList|polymer\.app\.search\.v1\.Search\/SearchAll)(?:\?|$)
-    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/main/generated/Egern/Scripts/Bilibili_Clean.mjs
+    script_url: https://raw.githubusercontent.com/Maaafty/egern-rule-artifacts/main/generated/Egern/Scripts/Bilibili_Clean.mjs?v=20260726-2
     update_interval: 86400
     max_size: 8388608
     timeout: 10
