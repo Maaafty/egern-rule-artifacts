@@ -4,3 +4,5 @@ domain_suffix_set:
   - "gamekee.com"
   - "qiecdn.com"
   - "maj-soul.com"
+ip_cidr_set:
+  - 10.66.0.0/16
