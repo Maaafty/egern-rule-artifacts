@@ -1,7 +1,7 @@
 #!name=Generated Domestic DNS
 #!desc=Routes ChinaDomain and manual domestic DNS hosts to encrypted domestic DNS.
 #!author=egern-rule-artifacts
-# Host mappings: 16446
+# Host mappings: 16450
 # Unrepresentable keyword/regexp rules: 5
 
 [Host]
@@ -4937,6 +4937,7 @@
 *.lsplayer.com = server:https://dns.alidns.com/dns-query
 *.lu.com = server:https://dns.alidns.com/dns-query
 *.lu1da.cn = server:https://dns.alidns.com/dns-query
+*.lubiao.wiki = server:https://dns.alidns.com/dns-query
 *.luckincoffeecdn.com = server:https://dns.alidns.com/dns-query
 *.luckyair.net = server:https://dns.alidns.com/dns-query
 *.luckysf.net = server:https://dns.alidns.com/dns-query
@@ -7588,6 +7589,7 @@
 *.xkw.com = server:https://dns.alidns.com/dns-query
 *.xmcdn.com = server:https://dns.alidns.com/dns-query
 *.xmhouse.com = server:https://dns.alidns.com/dns-query
+*.xmoj.tech = server:https://dns.alidns.com/dns-query
 *.xn--8y0a063a = server:https://dns.alidns.com/dns-query
 *.xn--9krt00a = server:https://dns.alidns.com/dns-query
 *.xn--fiq53l6wcx3kp9bc7joo6apn8a.cn = server:https://dns.alidns.com/dns-query
@@ -13176,6 +13178,7 @@ ls66.cn = server:https://dns.alidns.com/dns-query
 lsplayer.com = server:https://dns.alidns.com/dns-query
 lu.com = server:https://dns.alidns.com/dns-query
 lu1da.cn = server:https://dns.alidns.com/dns-query
+lubiao.wiki = server:https://dns.alidns.com/dns-query
 luckincoffeecdn.com = server:https://dns.alidns.com/dns-query
 luckyair.net = server:https://dns.alidns.com/dns-query
 luckysf.net = server:https://dns.alidns.com/dns-query
@@ -15924,6 +15927,7 @@ xkb.com.cn = server:https://dns.alidns.com/dns-query
 xkw.com = server:https://dns.alidns.com/dns-query
 xmcdn.com = server:https://dns.alidns.com/dns-query
 xmhouse.com = server:https://dns.alidns.com/dns-query
+xmoj.tech = server:https://dns.alidns.com/dns-query
 xn--8y0a063a = server:https://dns.alidns.com/dns-query
 xn--9krt00a = server:https://dns.alidns.com/dns-query
 xn--fiq53l6wcx3kp9bc7joo6apn8a.cn = server:https://dns.alidns.com/dns-query
