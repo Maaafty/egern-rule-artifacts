@@ -1,7 +1,7 @@
 #!name=Generated Domestic DNS
 #!desc=Routes ChinaDomain and manual domestic DNS hosts to encrypted domestic DNS.
 #!author=egern-rule-artifacts
-# Host mappings: 16450
+# Host mappings: 16470
 # Unrepresentable keyword/regexp rules: 5
 
 [Host]
@@ -121,6 +121,7 @@
 *.19yxw.com = server:https://dns.alidns.com/dns-query
 *.1hai.cn = server:https://dns.alidns.com/dns-query
 *.1huizhan.com = server:https://dns.alidns.com/dns-query
+*.1kkk.com = server:https://dns.alidns.com/dns-query
 *.1nongjing.com = server:https://dns.alidns.com/dns-query
 *.1ppt.com = server:https://dns.alidns.com/dns-query
 *.1ting.com = server:https://dns.alidns.com/dns-query
@@ -1932,6 +1933,7 @@
 *.cdnbuild.com = server:https://dns.alidns.com/dns-query
 *.cdnbuild.net = server:https://dns.alidns.com/dns-query
 *.cdncl.net = server:https://dns.alidns.com/dns-query
+*.cdndm5.com = server:https://dns.alidns.com/dns-query
 *.cdndns1.com = server:https://dns.alidns.com/dns-query
 *.cdndns2.com = server:https://dns.alidns.com/dns-query
 *.cdndo.com = server:https://dns.alidns.com/dns-query
@@ -2820,6 +2822,9 @@
 *.dlife.cn = server:https://dns.alidns.com/dns-query
 *.dlnel.com = server:https://dns.alidns.com/dns-query
 *.dlnel.org = server:https://dns.alidns.com/dns-query
+*.dm5.cn = server:https://dns.alidns.com/dns-query
+*.dm5.com = server:https://dns.alidns.com/dns-query
+*.dm9.com = server:https://dns.alidns.com/dns-query
 *.dmall.com = server:https://dns.alidns.com/dns-query
 *.dmallcdn.com = server:https://dns.alidns.com/dns-query
 *.dmhmusic.com = server:https://dns.alidns.com/dns-query
@@ -3475,6 +3480,7 @@
 *.glsc.com.cn = server:https://dns.alidns.com/dns-query
 *.glxcc.net = server:https://dns.alidns.com/dns-query
 *.gm86.com = server:https://dns.alidns.com/dns-query
+*.gmanhua.com = server:https://dns.alidns.com/dns-query
 *.gmdaily.cn = server:https://dns.alidns.com/dns-query
 *.gmedev.cn = server:https://dns.alidns.com/dns-query
 *.gmw.cn = server:https://dns.alidns.com/dns-query
@@ -3754,6 +3760,7 @@
 *.hjapi.com = server:https://dns.alidns.com/dns-query
 *.hjfile.cn = server:https://dns.alidns.com/dns-query
 *.hkgcloudcs.com = server:https://dns.alidns.com/dns-query
+*.hkmanga.com = server:https://dns.alidns.com/dns-query
 *.hktheone.com = server:https://dns.alidns.com/dns-query
 *.hlgdata.com = server:https://dns.alidns.com/dns-query
 *.hlzqgs.com = server:https://dns.alidns.com/dns-query
@@ -5010,6 +5017,9 @@
 *.mamecn.com = server:https://dns.alidns.com/dns-query
 *.management-azure-devices-provisioning.cn = server:https://dns.alidns.com/dns-query
 *.management-azure-devices.cn = server:https://dns.alidns.com/dns-query
+*.manben.com = server:https://dns.alidns.com/dns-query
+*.manbenapi.com = server:https://dns.alidns.com/dns-query
+*.manhuaren.com = server:https://dns.alidns.com/dns-query
 *.manhuatai.com = server:https://dns.alidns.com/dns-query
 *.manmanbuy.com = server:https://dns.alidns.com/dns-query
 *.manmankan.com = server:https://dns.alidns.com/dns-query
@@ -8231,6 +8241,7 @@
 19yxw.com = server:https://dns.alidns.com/dns-query
 1hai.cn = server:https://dns.alidns.com/dns-query
 1huizhan.com = server:https://dns.alidns.com/dns-query
+1kkk.com = server:https://dns.alidns.com/dns-query
 1nongjing.com = server:https://dns.alidns.com/dns-query
 1ppt.com = server:https://dns.alidns.com/dns-query
 1ting.com = server:https://dns.alidns.com/dns-query
@@ -10080,6 +10091,7 @@ cdn30.org = server:https://dns.alidns.com/dns-query
 cdnbuild.com = server:https://dns.alidns.com/dns-query
 cdnbuild.net = server:https://dns.alidns.com/dns-query
 cdncl.net = server:https://dns.alidns.com/dns-query
+cdndm5.com = server:https://dns.alidns.com/dns-query
 cdndns1.com = server:https://dns.alidns.com/dns-query
 cdndns2.com = server:https://dns.alidns.com/dns-query
 cdndo.com = server:https://dns.alidns.com/dns-query
@@ -10995,6 +11007,9 @@ dlgslb.net = server:https://dns.alidns.com/dns-query
 dlife.cn = server:https://dns.alidns.com/dns-query
 dlnel.com = server:https://dns.alidns.com/dns-query
 dlnel.org = server:https://dns.alidns.com/dns-query
+dm5.cn = server:https://dns.alidns.com/dns-query
+dm5.com = server:https://dns.alidns.com/dns-query
+dm9.com = server:https://dns.alidns.com/dns-query
 dmall.com = server:https://dns.alidns.com/dns-query
 dmallcdn.com = server:https://dns.alidns.com/dns-query
 dmhmusic.com = server:https://dns.alidns.com/dns-query
@@ -11670,6 +11685,7 @@ globrand.com = server:https://dns.alidns.com/dns-query
 glsc.com.cn = server:https://dns.alidns.com/dns-query
 glxcc.net = server:https://dns.alidns.com/dns-query
 gm86.com = server:https://dns.alidns.com/dns-query
+gmanhua.com = server:https://dns.alidns.com/dns-query
 gmdaily.cn = server:https://dns.alidns.com/dns-query
 gmedev.cn = server:https://dns.alidns.com/dns-query
 gmw.cn = server:https://dns.alidns.com/dns-query
@@ -11976,6 +11992,7 @@ hiyd.com = server:https://dns.alidns.com/dns-query
 hjapi.com = server:https://dns.alidns.com/dns-query
 hjfile.cn = server:https://dns.alidns.com/dns-query
 hkgcloudcs.com = server:https://dns.alidns.com/dns-query
+hkmanga.com = server:https://dns.alidns.com/dns-query
 hktheone.com = server:https://dns.alidns.com/dns-query
 hlgdata.com = server:https://dns.alidns.com/dns-query
 hlzqgs.com = server:https://dns.alidns.com/dns-query
@@ -13252,6 +13269,9 @@ mamayz.com = server:https://dns.alidns.com/dns-query
 mamecn.com = server:https://dns.alidns.com/dns-query
 management-azure-devices-provisioning.cn = server:https://dns.alidns.com/dns-query
 management-azure-devices.cn = server:https://dns.alidns.com/dns-query
+manben.com = server:https://dns.alidns.com/dns-query
+manbenapi.com = server:https://dns.alidns.com/dns-query
+manhuaren.com = server:https://dns.alidns.com/dns-query
 manhuatai.com = server:https://dns.alidns.com/dns-query
 manmanbuy.com = server:https://dns.alidns.com/dns-query
 manmankan.com = server:https://dns.alidns.com/dns-query
