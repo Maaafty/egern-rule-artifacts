@@ -1,7 +1,7 @@
 #!name=Generated Domestic DNS
 #!desc=Routes ChinaDomain and manual domestic DNS hosts to encrypted domestic DNS.
 #!author=egern-rule-artifacts
-# Host mappings: 16782
+# Host mappings: 16786
 # Unrepresentable keyword/regexp rules: 5
 
 [Host]
@@ -2553,6 +2553,7 @@
 *.cqn.com.cn = server:https://dns.alidns.com/dns-query
 *.cqnews.net = server:https://dns.alidns.com/dns-query
 *.cqsjb.com = server:https://dns.alidns.com/dns-query
+*.cqtk.com.cn = server:https://dns.alidns.com/dns-query
 *.cqvip.com = server:https://dns.alidns.com/dns-query
 *.cr-cts.com = server:https://dns.alidns.com/dns-query
 *.cr173.com = server:https://dns.alidns.com/dns-query
@@ -9035,6 +9036,7 @@ apdcdn.net = server:https://dns.alidns.com/dns-query
 api-building.fun = server:https://dns.alidns.com/dns-query
 api.alibabacloud.com = server:https://dns.alidns.com/dns-query
 api.blipsandchitz.me = server:https://dns.alidns.com/dns-query
+api.steampowered.com = server:https://dns.alidns.com/dns-query
 apifox.cn = server:https://dns.alidns.com/dns-query
 apifox.com = server:https://dns.alidns.com/dns-query
 apigwtencent.com = server:https://dns.alidns.com/dns-query
@@ -10881,6 +10883,7 @@ cqliving.com = server:https://dns.alidns.com/dns-query
 cqn.com.cn = server:https://dns.alidns.com/dns-query
 cqnews.net = server:https://dns.alidns.com/dns-query
 cqsjb.com = server:https://dns.alidns.com/dns-query
+cqtk.com.cn = server:https://dns.alidns.com/dns-query
 cqvip.com = server:https://dns.alidns.com/dns-query
 cr-cts.com = server:https://dns.alidns.com/dns-query
 cr173.com = server:https://dns.alidns.com/dns-query
@@ -14935,6 +14938,7 @@ sto.cn = server:https://dns.alidns.com/dns-query
 stocke.com.cn = server:https://dns.alidns.com/dns-query
 stockstar.com = server:https://dns.alidns.com/dns-query
 stointl.com = server:https://dns.alidns.com/dns-query
+store.steampowered.com = server:https://dns.alidns.com/dns-query
 store.storeimages.cdn-apple.com = server:https://dns.alidns.com/dns-query
 storecorefulfillment.download.prss.microsoft.com = server:https://dns.alidns.com/dns-query
 storeedge.microsoft.com = server:https://dns.alidns.com/dns-query
