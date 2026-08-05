@@ -1,7 +1,7 @@
 #!name=Generated Domestic DNS
 #!desc=Routes ChinaDomain and manual domestic DNS hosts to encrypted domestic DNS.
 #!author=egern-rule-artifacts
-# Host mappings: 16786
+# Host mappings: 16796
 # Unrepresentable keyword/regexp rules: 5
 
 [Host]
@@ -3290,6 +3290,7 @@
 *.fnos.net = server:https://dns.alidns.com/dns-query
 *.focus-img.cn = server:https://dns.alidns.com/dns-query
 *.focus.cn = server:https://dns.alidns.com/dns-query
+*.focuschina.com = server:https://dns.alidns.com/dns-query
 *.fofa.info = server:https://dns.alidns.com/dns-query
 *.fofa.so = server:https://dns.alidns.com/dns-query
 *.fofuai.com = server:https://dns.alidns.com/dns-query
@@ -5081,6 +5082,7 @@
 *.m6.run = server:https://dns.alidns.com/dns-query
 *.m9.run = server:https://dns.alidns.com/dns-query
 *.ma.run = server:https://dns.alidns.com/dns-query
+*.made-in-china.com = server:https://dns.alidns.com/dns-query
 *.mafengwo.cn = server:https://dns.alidns.com/dns-query
 *.mafengwo.com = server:https://dns.alidns.com/dns-query
 *.mafengwo.net = server:https://dns.alidns.com/dns-query
@@ -5242,6 +5244,7 @@
 *.microsoftreactor.com.cn = server:https://dns.alidns.com/dns-query
 *.microsoftstore.com.cn = server:https://dns.alidns.com/dns-query
 *.microsofttranslator-int.cn = server:https://dns.alidns.com/dns-query
+*.micstatic.com = server:https://dns.alidns.com/dns-query
 *.micun.com = server:https://dns.alidns.com/dns-query
 *.midasbuy.com = server:https://dns.alidns.com/dns-query
 *.midea.cn = server:https://dns.alidns.com/dns-query
@@ -6919,6 +6922,7 @@
 *.tr-test.net = server:https://dns.alidns.com/dns-query
 *.tr-testboe.net = server:https://dns.alidns.com/dns-query
 *.tracup.com = server:https://dns.alidns.com/dns-query
+*.trademessenger.com = server:https://dns.alidns.com/dns-query
 *.trae.cn = server:https://dns.alidns.com/dns-query
 *.trae.com.cn = server:https://dns.alidns.com/dns-query
 *.trae.guru = server:https://dns.alidns.com/dns-query
@@ -7160,6 +7164,7 @@
 *.vemarsdev.com = server:https://dns.alidns.com/dns-query
 *.vemarsstatic.com = server:https://dns.alidns.com/dns-query
 *.vemarsweb.com = server:https://dns.alidns.com/dns-query
+*.vemic.com = server:https://dns.alidns.com/dns-query
 *.vertciot.com = server:https://dns.alidns.com/dns-query
 *.veryhuo.com = server:https://dns.alidns.com/dns-query
 *.veryzhun.com = server:https://dns.alidns.com/dns-query
@@ -11646,6 +11651,7 @@ fnnas.net = server:https://dns.alidns.com/dns-query
 fnos.net = server:https://dns.alidns.com/dns-query
 focus-img.cn = server:https://dns.alidns.com/dns-query
 focus.cn = server:https://dns.alidns.com/dns-query
+focuschina.com = server:https://dns.alidns.com/dns-query
 fofa.info = server:https://dns.alidns.com/dns-query
 fofa.so = server:https://dns.alidns.com/dns-query
 fofuai.com = server:https://dns.alidns.com/dns-query
@@ -13491,6 +13497,7 @@ m1905.com = server:https://dns.alidns.com/dns-query
 m6.run = server:https://dns.alidns.com/dns-query
 m9.run = server:https://dns.alidns.com/dns-query
 ma.run = server:https://dns.alidns.com/dns-query
+made-in-china.com = server:https://dns.alidns.com/dns-query
 mafengwo.cn = server:https://dns.alidns.com/dns-query
 mafengwo.com = server:https://dns.alidns.com/dns-query
 mafengwo.net = server:https://dns.alidns.com/dns-query
@@ -13653,6 +13660,7 @@ microsoftreactor.cn = server:https://dns.alidns.com/dns-query
 microsoftreactor.com.cn = server:https://dns.alidns.com/dns-query
 microsoftstore.com.cn = server:https://dns.alidns.com/dns-query
 microsofttranslator-int.cn = server:https://dns.alidns.com/dns-query
+micstatic.com = server:https://dns.alidns.com/dns-query
 micun.com = server:https://dns.alidns.com/dns-query
 midasbuy.com = server:https://dns.alidns.com/dns-query
 midea.cn = server:https://dns.alidns.com/dns-query
@@ -15404,6 +15412,7 @@ tr-test-ali.net = server:https://dns.alidns.com/dns-query
 tr-test.net = server:https://dns.alidns.com/dns-query
 tr-testboe.net = server:https://dns.alidns.com/dns-query
 tracup.com = server:https://dns.alidns.com/dns-query
+trademessenger.com = server:https://dns.alidns.com/dns-query
 trae.cn = server:https://dns.alidns.com/dns-query
 trae.com.cn = server:https://dns.alidns.com/dns-query
 trae.guru = server:https://dns.alidns.com/dns-query
@@ -15650,6 +15659,7 @@ veigagslb.net = server:https://dns.alidns.com/dns-query
 vemarsdev.com = server:https://dns.alidns.com/dns-query
 vemarsstatic.com = server:https://dns.alidns.com/dns-query
 vemarsweb.com = server:https://dns.alidns.com/dns-query
+vemic.com = server:https://dns.alidns.com/dns-query
 vertciot.com = server:https://dns.alidns.com/dns-query
 veryhuo.com = server:https://dns.alidns.com/dns-query
 veryzhun.com = server:https://dns.alidns.com/dns-query
