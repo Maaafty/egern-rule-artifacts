@@ -1,7 +1,7 @@
 #!name=Generated Domestic DNS
 #!desc=Routes ChinaDomain and manual domestic DNS hosts to encrypted domestic DNS.
 #!author=egern-rule-artifacts
-# Host mappings: 16796
+# Host mappings: 16812
 # Unrepresentable keyword/regexp rules: 5
 
 [Host]
@@ -440,6 +440,8 @@
 *.9553.com = server:https://dns.alidns.com/dns-query
 *.95588.com = server:https://dns.alidns.com/dns-query
 *.95588.com.cn = server:https://dns.alidns.com/dns-query
+*.95598.cn = server:https://dns.alidns.com/dns-query
+*.95598pay.com = server:https://dns.alidns.com/dns-query
 *.962.net = server:https://dns.alidns.com/dns-query
 *.9718.com = server:https://dns.alidns.com/dns-query
 *.97973.com = server:https://dns.alidns.com/dns-query
@@ -2575,6 +2577,7 @@
 *.csdn.net.cn = server:https://dns.alidns.com/dns-query
 *.csdnimg.cn = server:https://dns.alidns.com/dns-query
 *.csfounder.com = server:https://dns.alidns.com/dns-query
+*.csg.cn = server:https://dns.alidns.com/dns-query
 *.csgo.com.cn = server:https://dns.alidns.com/dns-query
 *.csjplatform.com = server:https://dns.alidns.com/dns-query
 *.csmjzs.com = server:https://dns.alidns.com/dns-query
@@ -3066,12 +3069,14 @@
 *.ebscn.com = server:https://dns.alidns.com/dns-query
 *.ebtrust.com = server:https://dns.alidns.com/dns-query
 *.eceshi.com = server:https://dns.alidns.com/dns-query
+*.echargenet.com = server:https://dns.alidns.com/dns-query
 *.ecitic.com = server:https://dns.alidns.com/dns-query
 *.ecjobhome.com = server:https://dns.alidns.com/dns-query
 *.ecloud-gdu.com = server:https://dns.alidns.com/dns-query
 *.ecns.cn = server:https://dns.alidns.com/dns-query
 *.ecombdapi.com = server:https://dns.alidns.com/dns-query
 *.ecombdstatic.com = server:https://dns.alidns.com/dns-query
+*.ecsg.com.cn = server:https://dns.alidns.com/dns-query
 *.ectencent.cn = server:https://dns.alidns.com/dns-query
 *.ectencent.com.cn = server:https://dns.alidns.com/dns-query
 *.ecukwai.com = server:https://dns.alidns.com/dns-query
@@ -3130,6 +3135,7 @@
 *.erp321.com = server:https://dns.alidns.com/dns-query
 *.erp321.net = server:https://dns.alidns.com/dns-query
 *.ersjk.com = server:https://dns.alidns.com/dns-query
+*.esgcc.com.cn = server:https://dns.alidns.com/dns-query
 *.esp8266.cn = server:https://dns.alidns.com/dns-query
 *.esp8266.com.cn = server:https://dns.alidns.com/dns-query
 *.espressif.cn = server:https://dns.alidns.com/dns-query
@@ -5818,6 +5824,7 @@
 *.powerappsportals.cn = server:https://dns.alidns.com/dns-query
 *.powerautomate.cn = server:https://dns.alidns.com/dns-query
 *.powerbi.cn = server:https://dns.alidns.com/dns-query
+*.poweremarket.com = server:https://dns.alidns.com/dns-query
 *.pp.cn = server:https://dns.alidns.com/dns-query
 *.ppkankan01.com = server:https://dns.alidns.com/dns-query
 *.pplive.cn = server:https://dns.alidns.com/dns-query
@@ -6217,6 +6224,7 @@
 *.sfgy.org = server:https://dns.alidns.com/dns-query
 *.sg.cn = server:https://dns.alidns.com/dns-query
 *.sgamer.com = server:https://dns.alidns.com/dns-query
+*.sgcc.com.cn = server:https://dns.alidns.com/dns-query
 *.sgsic.com = server:https://dns.alidns.com/dns-query
 *.sgtmos.com = server:https://dns.alidns.com/dns-query
 *.sgyeyou.com = server:https://dns.alidns.com/dns-query
@@ -8724,6 +8732,8 @@
 9553.com = server:https://dns.alidns.com/dns-query
 95588.com = server:https://dns.alidns.com/dns-query
 95588.com.cn = server:https://dns.alidns.com/dns-query
+95598.cn = server:https://dns.alidns.com/dns-query
+95598pay.com = server:https://dns.alidns.com/dns-query
 962.net = server:https://dns.alidns.com/dns-query
 9718.com = server:https://dns.alidns.com/dns-query
 97973.com = server:https://dns.alidns.com/dns-query
@@ -10915,6 +10925,7 @@ csdn.net = server:https://dns.alidns.com/dns-query
 csdn.net.cn = server:https://dns.alidns.com/dns-query
 csdnimg.cn = server:https://dns.alidns.com/dns-query
 csfounder.com = server:https://dns.alidns.com/dns-query
+csg.cn = server:https://dns.alidns.com/dns-query
 csgo.com.cn = server:https://dns.alidns.com/dns-query
 csi.gstatic.com = server:https://dns.alidns.com/dns-query
 csjplatform.com = server:https://dns.alidns.com/dns-query
@@ -11422,12 +11433,14 @@ ebscn-am.com = server:https://dns.alidns.com/dns-query
 ebscn.com = server:https://dns.alidns.com/dns-query
 ebtrust.com = server:https://dns.alidns.com/dns-query
 eceshi.com = server:https://dns.alidns.com/dns-query
+echargenet.com = server:https://dns.alidns.com/dns-query
 ecitic.com = server:https://dns.alidns.com/dns-query
 ecjobhome.com = server:https://dns.alidns.com/dns-query
 ecloud-gdu.com = server:https://dns.alidns.com/dns-query
 ecns.cn = server:https://dns.alidns.com/dns-query
 ecombdapi.com = server:https://dns.alidns.com/dns-query
 ecombdstatic.com = server:https://dns.alidns.com/dns-query
+ecsg.com.cn = server:https://dns.alidns.com/dns-query
 ectencent.cn = server:https://dns.alidns.com/dns-query
 ectencent.com.cn = server:https://dns.alidns.com/dns-query
 ecukwai.com = server:https://dns.alidns.com/dns-query
@@ -11489,6 +11502,7 @@ erp321.cn = server:https://dns.alidns.com/dns-query
 erp321.com = server:https://dns.alidns.com/dns-query
 erp321.net = server:https://dns.alidns.com/dns-query
 ersjk.com = server:https://dns.alidns.com/dns-query
+esgcc.com.cn = server:https://dns.alidns.com/dns-query
 esp8266.cn = server:https://dns.alidns.com/dns-query
 esp8266.com.cn = server:https://dns.alidns.com/dns-query
 espressif.cn = server:https://dns.alidns.com/dns-query
@@ -14256,6 +14270,7 @@ powerapps.cn = server:https://dns.alidns.com/dns-query
 powerappsportals.cn = server:https://dns.alidns.com/dns-query
 powerautomate.cn = server:https://dns.alidns.com/dns-query
 powerbi.cn = server:https://dns.alidns.com/dns-query
+poweremarket.com = server:https://dns.alidns.com/dns-query
 pp.cn = server:https://dns.alidns.com/dns-query
 ppkankan01.com = server:https://dns.alidns.com/dns-query
 pplive.cn = server:https://dns.alidns.com/dns-query
@@ -14684,6 +14699,7 @@ sffix.cn = server:https://dns.alidns.com/dns-query
 sfgy.org = server:https://dns.alidns.com/dns-query
 sg.cn = server:https://dns.alidns.com/dns-query
 sgamer.com = server:https://dns.alidns.com/dns-query
+sgcc.com.cn = server:https://dns.alidns.com/dns-query
 sgsic.com = server:https://dns.alidns.com/dns-query
 sgtmos.com = server:https://dns.alidns.com/dns-query
 sgyeyou.com = server:https://dns.alidns.com/dns-query
