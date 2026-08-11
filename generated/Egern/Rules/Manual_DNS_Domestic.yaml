@@ -3,6 +3,7 @@
 domain_set:
   - "store.steampowered.com"
   - "api.steampowered.com"
+  - "x.ttzgame.cn"
 domain_suffix_set:
   - "gamekee.com"
   - "qiecdn.com"

@@ -1,7 +1,7 @@
 #!name=Generated Domestic DNS
 #!desc=Routes ChinaDomain and manual domestic DNS hosts to encrypted domestic DNS.
 #!author=egern-rule-artifacts
-# Host mappings: 16886
+# Host mappings: 16891
 # Unrepresentable keyword/regexp rules: 5
 
 [Host]
@@ -5333,6 +5333,7 @@
 *.mmarket6.com = server:https://dns.alidns.com/dns-query
 *.mmbang.com = server:https://dns.alidns.com/dns-query
 *.mmbang.info = server:https://dns.alidns.com/dns-query
+*.mmbizurl.cn = server:https://dns.alidns.com/dns-query
 *.mmstat.com = server:https://dns.alidns.com/dns-query
 *.mncmsidlab1.cn = server:https://dns.alidns.com/dns-query
 *.mndqlib.net = server:https://dns.alidns.com/dns-query
@@ -7150,6 +7151,7 @@
 *.upfos.cn = server:https://dns.alidns.com/dns-query
 *.upfos.com = server:https://dns.alidns.com/dns-query
 *.upyun.com = server:https://dns.alidns.com/dns-query
+*.url.cn = server:https://dns.alidns.com/dns-query
 *.urlqh.cn = server:https://dns.alidns.com/dns-query
 *.urselect.com = server:https://dns.alidns.com/dns-query
 *.urtc.com.cn = server:https://dns.alidns.com/dns-query
@@ -13794,6 +13796,7 @@ mmarket.com = server:https://dns.alidns.com/dns-query
 mmarket6.com = server:https://dns.alidns.com/dns-query
 mmbang.com = server:https://dns.alidns.com/dns-query
 mmbang.info = server:https://dns.alidns.com/dns-query
+mmbizurl.cn = server:https://dns.alidns.com/dns-query
 mmstat.com = server:https://dns.alidns.com/dns-query
 mncmsidlab1.cn = server:https://dns.alidns.com/dns-query
 mndqlib.net = server:https://dns.alidns.com/dns-query
@@ -15688,6 +15691,7 @@ upfos.cn = server:https://dns.alidns.com/dns-query
 upfos.com = server:https://dns.alidns.com/dns-query
 uplaypc-s-ubisoft.cdn.ubi.com = server:https://dns.alidns.com/dns-query
 upyun.com = server:https://dns.alidns.com/dns-query
+url.cn = server:https://dns.alidns.com/dns-query
 urlqh.cn = server:https://dns.alidns.com/dns-query
 urselect.com = server:https://dns.alidns.com/dns-query
 urtc.com.cn = server:https://dns.alidns.com/dns-query
@@ -16195,6 +16199,7 @@ wztsy.com = server:https://dns.alidns.com/dns-query
 x-cloud.cc = server:https://dns.alidns.com/dns-query
 x-gpu.com = server:https://dns.alidns.com/dns-query
 x-station.cn = server:https://dns.alidns.com/dns-query
+x.ttzgame.cn = server:https://dns.alidns.com/dns-query
 x315.com = server:https://dns.alidns.com/dns-query
 x9exk.cn = server:https://dns.alidns.com/dns-query
 xa-bank.com = server:https://dns.alidns.com/dns-query
