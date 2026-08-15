@@ -1,7 +1,7 @@
 #!name=Generated Domestic DNS
 #!desc=Routes ChinaDomain and manual domestic DNS hosts to encrypted domestic DNS.
 #!author=egern-rule-artifacts
-# Host mappings: 17017
+# Host mappings: 17021
 # Unrepresentable keyword/regexp rules: 5
 
 [Host]
@@ -774,6 +774,7 @@
 *.appldnld.apple.com = server:https://dns.alidns.com/dns-query
 *.apple-icloud.cn = server:https://dns.alidns.com/dns-query
 *.appleicloud.cn = server:https://dns.alidns.com/dns-query
+*.applogcdn.com = server:https://dns.alidns.com/dns-query
 *.applysquare.com = server:https://dns.alidns.com/dns-query
 *.applysquare.net = server:https://dns.alidns.com/dns-query
 *.appserviceenvironment.cn = server:https://dns.alidns.com/dns-query
@@ -6259,6 +6260,7 @@
 *.sdo.com = server:https://dns.alidns.com/dns-query
 *.sealsuite.com = server:https://dns.alidns.com/dns-query
 *.sealsuite.net = server:https://dns.alidns.com/dns-query
+*.searchpstatp.com = server:https://dns.alidns.com/dns-query
 *.searchstatic.com = server:https://dns.alidns.com/dns-query
 *.searchtoutiaolive.com = server:https://dns.alidns.com/dns-query
 *.seasungames.cn = server:https://dns.alidns.com/dns-query
@@ -9186,6 +9188,7 @@ appldnld.apple.com = server:https://dns.alidns.com/dns-query
 appldnld.g.aaplimg.com = server:https://dns.alidns.com/dns-query
 apple-icloud.cn = server:https://dns.alidns.com/dns-query
 appleicloud.cn = server:https://dns.alidns.com/dns-query
+applogcdn.com = server:https://dns.alidns.com/dns-query
 applysquare.com = server:https://dns.alidns.com/dns-query
 applysquare.net = server:https://dns.alidns.com/dns-query
 apps.mzstatic.com = server:https://dns.alidns.com/dns-query
@@ -14835,6 +14838,7 @@ sdo.com = server:https://dns.alidns.com/dns-query
 sdx.microsoft.com = server:https://dns.alidns.com/dns-query
 sealsuite.com = server:https://dns.alidns.com/dns-query
 sealsuite.net = server:https://dns.alidns.com/dns-query
+searchpstatp.com = server:https://dns.alidns.com/dns-query
 searchstatic.com = server:https://dns.alidns.com/dns-query
 searchtoutiaolive.com = server:https://dns.alidns.com/dns-query
 seasungames.cn = server:https://dns.alidns.com/dns-query
