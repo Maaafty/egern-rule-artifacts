@@ -1,7 +1,7 @@
 #!name=Generated Domestic DNS
 #!desc=Routes ChinaDomain and manual domestic DNS hosts to encrypted domestic DNS.
 #!author=egern-rule-artifacts
-# Host mappings: 17047
+# Host mappings: 17043
 # Unrepresentable keyword/regexp rules: 5
 
 [Host]
@@ -5416,7 +5416,6 @@
 *.monika.love = server:https://dns.alidns.com/dns-query
 *.mooc.cn = server:https://dns.alidns.com/dns-query
 *.moocollege.com = server:https://dns.alidns.com/dns-query
-*.moonshot.ai = server:https://dns.alidns.com/dns-query
 *.moonshot.cn = server:https://dns.alidns.com/dns-query
 *.moonvy.com = server:https://dns.alidns.com/dns-query
 *.moonvy.cool = server:https://dns.alidns.com/dns-query
@@ -11638,7 +11637,6 @@ elongstatic.com = server:https://dns.alidns.com/dns-query
 email.cn = server:https://dns.alidns.com/dns-query
 emarbox.com = server:https://dns.alidns.com/dns-query
 emas-poc.com = server:https://dns.alidns.com/dns-query
-emoi-cncdn.bing.com = server:https://dns.alidns.com/dns-query
 emoriko.com = server:https://dns.alidns.com/dns-query
 emr-volces.com = server:https://dns.alidns.com/dns-query
 ems.com.cn = server:https://dns.alidns.com/dns-query
@@ -13957,7 +13955,6 @@ moliranran.com = server:https://dns.alidns.com/dns-query
 monika.love = server:https://dns.alidns.com/dns-query
 mooc.cn = server:https://dns.alidns.com/dns-query
 moocollege.com = server:https://dns.alidns.com/dns-query
-moonshot.ai = server:https://dns.alidns.com/dns-query
 moonshot.cn = server:https://dns.alidns.com/dns-query
 moonvy.com = server:https://dns.alidns.com/dns-query
 moonvy.cool = server:https://dns.alidns.com/dns-query
@@ -15829,7 +15826,6 @@ updream.cn = server:https://dns.alidns.com/dns-query
 upe.net = server:https://dns.alidns.com/dns-query
 upfos.cn = server:https://dns.alidns.com/dns-query
 upfos.com = server:https://dns.alidns.com/dns-query
-uplaypc-s-ubisoft.cdn.ubi.com = server:https://dns.alidns.com/dns-query
 upyun.com = server:https://dns.alidns.com/dns-query
 url.cn = server:https://dns.alidns.com/dns-query
 urlqh.cn = server:https://dns.alidns.com/dns-query
