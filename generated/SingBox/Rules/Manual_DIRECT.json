@@ -1,0 +1,15 @@
+{
+  "version": 3,
+  "rules": [
+    {
+      "domain_suffix": [
+        "gamekee.com",
+        "maj-soul.com",
+        "qiecdn.com"
+      ],
+      "ip_cidr": [
+        "10.66.0.0/16"
+      ]
+    }
+  ]
+}

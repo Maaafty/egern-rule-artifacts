@@ -1,0 +1,42 @@
+{
+  "version": 3,
+  "rules": [
+    {
+      "domain": [
+        "cma.itunes.apple.com",
+        "cma2.itunes.apple.com",
+        "fpinit.itunes.apple.com",
+        "init.itunes.apple.com",
+        "librarydaap.itunes.apple.com",
+        "musicstatus.itunes.apple.com",
+        "pd-nk.itunes.apple.com",
+        "pd.itunes.apple.com",
+        "play.itunes.apple.com",
+        "radio-activity.itunes.apple.com",
+        "radio.itunes.apple.com",
+        "se2.itunes.apple.com",
+        "silverbullet-external.itunes.apple.com",
+        "speedysub.itunes.apple.com",
+        "sync.itunes.apple.com",
+        "upp.itunes.apple.com"
+      ],
+      "domain_keyword": [
+        "genius-"
+      ],
+      "domain_suffix": [
+        "applemusic.berlin",
+        "applemusic.co",
+        "applemusic.com",
+        "applemusic.com.au",
+        "applemusic.hamburg",
+        "applemusic.wang",
+        "applemusicconnect.com",
+        "applemusicfestival.com",
+        "blobstore.apple.com",
+        "music.apple.com",
+        "musickit.net",
+        "wwwapplemusic.com"
+      ]
+    }
+  ]
+}

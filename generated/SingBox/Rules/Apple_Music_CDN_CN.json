@@ -1,0 +1,14 @@
+{
+  "version": 3,
+  "rules": [
+    {
+      "domain": [
+        "aod-ssl.itunes.apple.com",
+        "aod.itunes.apple.com",
+        "js-cdn.music.apple.com",
+        "mvod.itunes.apple.com",
+        "streamingaudio.itunes.apple.com"
+      ]
+    }
+  ]
+}

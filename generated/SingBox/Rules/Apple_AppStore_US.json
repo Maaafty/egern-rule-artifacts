@@ -1,0 +1,34 @@
+{
+  "version": 3,
+  "rules": [
+    {
+      "domain": [
+        "amp-account.itunes.apple.com",
+        "amp-api-edge-lb-cn.itunes-apple.com.akadns.net",
+        "amp-api-edge-lb.itunes-apple.com.akadns.net",
+        "amp-api-edge.apps.apple.com",
+        "amp-api-search-edge.apps.apple.com",
+        "amp-api-updates.apps.apple.com",
+        "amp-api.apps.apple.com",
+        "api-edge.apps.apple.com",
+        "auth.itunes.apple.com",
+        "bag.itunes.apple.com",
+        "bookkeeper.itunes.apple.com",
+        "client-api.itunes.apple.com",
+        "entitlements-edge.itunes.apple.com",
+        "entitlements.itunes.apple.com",
+        "inappcheck-cn.itunes-apple.com.akadns.net",
+        "inappcheck-lb.itunes-apple.com.akadns.net",
+        "inappcheck.itunes.apple.com",
+        "iosapps.itunes.apple.com",
+        "mzstorekit.itunes.apple.com",
+        "osxapps.itunes.apple.com",
+        "search.itunes.apple.com",
+        "sf-api-token-service.itunes.apple.com"
+      ],
+      "domain_keyword": [
+        "-buy.itunes.apple.com"
+      ]
+    }
+  ]
+}

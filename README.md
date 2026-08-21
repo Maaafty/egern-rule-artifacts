@@ -1,7 +1,7 @@
 # Generated rule artifacts
 
-This repository contains machine-generated rule resources for Egern, Loon, and
-Mihomo-compatible clients.
+This repository contains machine-generated rule resources for Egern, Loon,
+Mihomo-compatible, and sing-box clients.
 
 Mihomo domain/IP rules include both auditable YAML sources and compiled MRS
 runtime artifacts. Every MRS file is generated from its same-named YAML file by
