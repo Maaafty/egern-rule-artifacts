@@ -1,7 +1,7 @@
 #!name=Generated Domestic DNS
 #!desc=Routes ChinaDomain and manual domestic DNS hosts to encrypted domestic DNS.
 #!author=egern-rule-artifacts
-# Host mappings: 17043
+# Host mappings: 17045
 # Unrepresentable keyword/regexp rules: 5
 
 [Host]
@@ -5275,6 +5275,7 @@
 *.meta.law = server:https://dns.alidns.com/dns-query
 *.metalrevolution.com = server:https://dns.alidns.com/dns-query
 *.metaso.cn = server:https://dns.alidns.com/dns-query
+*.metax-tech.com = server:https://dns.alidns.com/dns-query
 *.mfcteda.com = server:https://dns.alidns.com/dns-query
 *.mfk.com = server:https://dns.alidns.com/dns-query
 *.mfuns.cn = server:https://dns.alidns.com/dns-query
@@ -13814,6 +13815,7 @@ mesu.apple.com = server:https://dns.alidns.com/dns-query
 meta.law = server:https://dns.alidns.com/dns-query
 metalrevolution.com = server:https://dns.alidns.com/dns-query
 metaso.cn = server:https://dns.alidns.com/dns-query
+metax-tech.com = server:https://dns.alidns.com/dns-query
 mfcteda.com = server:https://dns.alidns.com/dns-query
 mfk.com = server:https://dns.alidns.com/dns-query
 mfuns.cn = server:https://dns.alidns.com/dns-query
