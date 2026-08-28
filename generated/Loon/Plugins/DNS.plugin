@@ -1,7 +1,7 @@
 #!name=Generated Domestic DNS
 #!desc=Routes ChinaDomain and manual domestic DNS hosts to encrypted domestic DNS.
 #!author=egern-rule-artifacts
-# Host mappings: 17045
+# Host mappings: 17053
 # Unrepresentable keyword/regexp rules: 5
 
 [Host]
@@ -131,6 +131,7 @@
 *.1tyy.cn = server:https://dns.alidns.com/dns-query
 *.1xhh.cn = server:https://dns.alidns.com/dns-query
 *.1zhe.com = server:https://dns.alidns.com/dns-query
+*.20130123.com = server:https://dns.alidns.com/dns-query
 *.21cn.com = server:https://dns.alidns.com/dns-query
 *.21cnjy.com = server:https://dns.alidns.com/dns-query
 *.21jingji.com = server:https://dns.alidns.com/dns-query
@@ -549,6 +550,7 @@
 *.aiemy.com = server:https://dns.alidns.com/dns-query
 *.aiganggu.com = server:https://dns.alidns.com/dns-query
 *.aigc-cloud.com = server:https://dns.alidns.com/dns-query
+*.aigefurniture.com = server:https://dns.alidns.com/dns-query
 *.aigodlike.com = server:https://dns.alidns.com/dns-query
 *.aihst8.com = server:https://dns.alidns.com/dns-query
 *.aihuishou.com = server:https://dns.alidns.com/dns-query
@@ -5042,6 +5044,7 @@
 *.linglonglife.com = server:https://dns.alidns.com/dns-query
 *.lingshoujia.com = server:https://dns.alidns.com/dns-query
 *.lingxigames.com = server:https://dns.alidns.com/dns-query
+*.lingxing.com = server:https://dns.alidns.com/dns-query
 *.linka2a.net = server:https://dns.alidns.com/dns-query
 *.linkflowtech.com = server:https://dns.alidns.com/dns-query
 *.linkheer.com = server:https://dns.alidns.com/dns-query
@@ -8323,6 +8326,7 @@
 *.zijiewap.net = server:https://dns.alidns.com/dns-query
 *.zilrms.com = server:https://dns.alidns.com/dns-query
 *.zimgs.cn = server:https://dns.alidns.com/dns-query
+*.ziniao.com = server:https://dns.alidns.com/dns-query
 *.ziroom.com = server:https://dns.alidns.com/dns-query
 *.ziroomapartment.com = server:https://dns.alidns.com/dns-query
 *.zixiaomao.com = server:https://dns.alidns.com/dns-query
@@ -8538,6 +8542,7 @@
 1tyy.cn = server:https://dns.alidns.com/dns-query
 1xhh.cn = server:https://dns.alidns.com/dns-query
 1zhe.com = server:https://dns.alidns.com/dns-query
+20130123.com = server:https://dns.alidns.com/dns-query
 21cn.com = server:https://dns.alidns.com/dns-query
 21cnjy.com = server:https://dns.alidns.com/dns-query
 21jingji.com = server:https://dns.alidns.com/dns-query
@@ -8966,6 +8971,7 @@ aidream.website = server:https://dns.alidns.com/dns-query
 aiemy.com = server:https://dns.alidns.com/dns-query
 aiganggu.com = server:https://dns.alidns.com/dns-query
 aigc-cloud.com = server:https://dns.alidns.com/dns-query
+aigefurniture.com = server:https://dns.alidns.com/dns-query
 aigodlike.com = server:https://dns.alidns.com/dns-query
 aihst8.com = server:https://dns.alidns.com/dns-query
 aihuishou.com = server:https://dns.alidns.com/dns-query
@@ -13580,6 +13586,7 @@ linglong.space = server:https://dns.alidns.com/dns-query
 linglonglife.com = server:https://dns.alidns.com/dns-query
 lingshoujia.com = server:https://dns.alidns.com/dns-query
 lingxigames.com = server:https://dns.alidns.com/dns-query
+lingxing.com = server:https://dns.alidns.com/dns-query
 linka2a.net = server:https://dns.alidns.com/dns-query
 linkflowtech.com = server:https://dns.alidns.com/dns-query
 linkheer.com = server:https://dns.alidns.com/dns-query
@@ -16961,6 +16968,7 @@ zijiewap.com = server:https://dns.alidns.com/dns-query
 zijiewap.net = server:https://dns.alidns.com/dns-query
 zilrms.com = server:https://dns.alidns.com/dns-query
 zimgs.cn = server:https://dns.alidns.com/dns-query
+ziniao.com = server:https://dns.alidns.com/dns-query
 ziroom.com = server:https://dns.alidns.com/dns-query
 ziroomapartment.com = server:https://dns.alidns.com/dns-query
 zixiaomao.com = server:https://dns.alidns.com/dns-query
