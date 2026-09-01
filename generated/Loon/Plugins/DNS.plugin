@@ -1,7 +1,7 @@
 #!name=Generated Domestic DNS
 #!desc=Routes ChinaDomain and manual domestic DNS hosts to encrypted domestic DNS.
 #!author=egern-rule-artifacts
-# Host mappings: 17149
+# Host mappings: 17167
 # Unrepresentable keyword/regexp rules: 5
 
 [Host]
@@ -202,6 +202,7 @@
 *.360pay.cn = server:https://dns.alidns.com/dns-query
 *.360qhcdn.com = server:https://dns.alidns.com/dns-query
 *.360safe.com = server:https://dns.alidns.com/dns-query
+*.360scdn.com = server:https://dns.alidns.com/dns-query
 *.360shouji.com = server:https://dns.alidns.com/dns-query
 *.360sjyh.cn = server:https://dns.alidns.com/dns-query
 *.360so.com = server:https://dns.alidns.com/dns-query
@@ -2823,6 +2824,7 @@
 *.deepin.org.cn = server:https://dns.alidns.com/dns-query
 *.deepinos.org = server:https://dns.alidns.com/dns-query
 *.deepseek.com = server:https://dns.alidns.com/dns-query
+*.deepseeksvc.com = server:https://dns.alidns.com/dns-query
 *.dengguobi.com = server:https://dns.alidns.com/dns-query
 *.deppon.com = server:https://dns.alidns.com/dns-query
 *.deppon.com.cn = server:https://dns.alidns.com/dns-query
@@ -6764,6 +6766,7 @@
 *.tcloudscdn.net = server:https://dns.alidns.com/dns-query
 *.tcltech.com = server:https://dns.alidns.com/dns-query
 *.tcp5.com = server:https://dns.alidns.com/dns-query
+*.tctpwebankcdn.net = server:https://dns.alidns.com/dns-query
 *.tcwqqdy.guru = server:https://dns.alidns.com/dns-query
 *.tdnsdl1.cn = server:https://dns.alidns.com/dns-query
 *.tdnsdl1.com.cn = server:https://dns.alidns.com/dns-query
@@ -6842,7 +6845,9 @@
 *.tencentcdb.cn = server:https://dns.alidns.com/dns-query
 *.tencentcdb.com = server:https://dns.alidns.com/dns-query
 *.tencentcdb.com.cn = server:https://dns.alidns.com/dns-query
+*.tencentclb.cn = server:https://dns.alidns.com/dns-query
 *.tencentclb.com = server:https://dns.alidns.com/dns-query
+*.tencentclb.com.cn = server:https://dns.alidns.com/dns-query
 *.tencentcloud-aiot.com = server:https://dns.alidns.com/dns-query
 *.tencentcloud.com = server:https://dns.alidns.com/dns-query
 *.tencentcloudapi.com = server:https://dns.alidns.com/dns-query
@@ -6866,6 +6871,7 @@
 *.tencentelasticsearch.com = server:https://dns.alidns.com/dns-query
 *.tencentid.com = server:https://dns.alidns.com/dns-query
 *.tencentidentity.com = server:https://dns.alidns.com/dns-query
+*.tencentmiying.com = server:https://dns.alidns.com/dns-query
 *.tencentmusic.com = server:https://dns.alidns.com/dns-query
 *.tencentproxy.com = server:https://dns.alidns.com/dns-query
 *.tencentrio.com = server:https://dns.alidns.com/dns-query
@@ -6878,6 +6884,7 @@
 *.tendbcluster.com = server:https://dns.alidns.com/dns-query
 *.tendcloud.com = server:https://dns.alidns.com/dns-query
 *.tendis.net = server:https://dns.alidns.com/dns-query
+*.tengmed.com = server:https://dns.alidns.com/dns-query
 *.tenpay.com = server:https://dns.alidns.com/dns-query
 *.tenxcloud.com = server:https://dns.alidns.com/dns-query
 *.tesoon.com = server:https://dns.alidns.com/dns-query
@@ -7546,6 +7553,7 @@
 *.wasumedia.cn = server:https://dns.alidns.com/dns-query
 *.wbimg.cn = server:https://dns.alidns.com/dns-query
 *.wbimg.com = server:https://dns.alidns.com/dns-query
+*.wbweilicai.com = server:https://dns.alidns.com/dns-query
 *.wcbygame.com = server:https://dns.alidns.com/dns-query
 *.wcdn.cn = server:https://dns.alidns.com/dns-query
 *.wch-ic.com = server:https://dns.alidns.com/dns-query
@@ -7675,6 +7683,7 @@
 *.wooyun.org = server:https://dns.alidns.com/dns-query
 *.woozooo.com = server:https://dns.alidns.com/dns-query
 *.woread.com.cn = server:https://dns.alidns.com/dns-query
+*.workbuddy.cn = server:https://dns.alidns.com/dns-query
 *.workercn.cn = server:https://dns.alidns.com/dns-query
 *.worktile.com = server:https://dns.alidns.com/dns-query
 *.worldofship.cn = server:https://dns.alidns.com/dns-query
@@ -8663,6 +8672,7 @@
 360pay.cn = server:https://dns.alidns.com/dns-query
 360qhcdn.com = server:https://dns.alidns.com/dns-query
 360safe.com = server:https://dns.alidns.com/dns-query
+360scdn.com = server:https://dns.alidns.com/dns-query
 360shouji.com = server:https://dns.alidns.com/dns-query
 360sjyh.cn = server:https://dns.alidns.com/dns-query
 360so.com = server:https://dns.alidns.com/dns-query
@@ -11344,6 +11354,7 @@ deepin.com = server:https://dns.alidns.com/dns-query
 deepin.org.cn = server:https://dns.alidns.com/dns-query
 deepinos.org = server:https://dns.alidns.com/dns-query
 deepseek.com = server:https://dns.alidns.com/dns-query
+deepseeksvc.com = server:https://dns.alidns.com/dns-query
 dengguobi.com = server:https://dns.alidns.com/dns-query
 deppon.com = server:https://dns.alidns.com/dns-query
 deppon.com.cn = server:https://dns.alidns.com/dns-query
@@ -15426,6 +15437,7 @@ tcloudscdn.com = server:https://dns.alidns.com/dns-query
 tcloudscdn.net = server:https://dns.alidns.com/dns-query
 tcltech.com = server:https://dns.alidns.com/dns-query
 tcp5.com = server:https://dns.alidns.com/dns-query
+tctpwebankcdn.net = server:https://dns.alidns.com/dns-query
 tcwqqdy.guru = server:https://dns.alidns.com/dns-query
 tdnsdl1.cn = server:https://dns.alidns.com/dns-query
 tdnsdl1.com.cn = server:https://dns.alidns.com/dns-query
@@ -15504,7 +15516,9 @@ tencentbyod.com = server:https://dns.alidns.com/dns-query
 tencentcdb.cn = server:https://dns.alidns.com/dns-query
 tencentcdb.com = server:https://dns.alidns.com/dns-query
 tencentcdb.com.cn = server:https://dns.alidns.com/dns-query
+tencentclb.cn = server:https://dns.alidns.com/dns-query
 tencentclb.com = server:https://dns.alidns.com/dns-query
+tencentclb.com.cn = server:https://dns.alidns.com/dns-query
 tencentcloud-aiot.com = server:https://dns.alidns.com/dns-query
 tencentcloud.com = server:https://dns.alidns.com/dns-query
 tencentcloudapi.com = server:https://dns.alidns.com/dns-query
@@ -15528,6 +15542,7 @@ tencenteiam.com = server:https://dns.alidns.com/dns-query
 tencentelasticsearch.com = server:https://dns.alidns.com/dns-query
 tencentid.com = server:https://dns.alidns.com/dns-query
 tencentidentity.com = server:https://dns.alidns.com/dns-query
+tencentmiying.com = server:https://dns.alidns.com/dns-query
 tencentmusic.com = server:https://dns.alidns.com/dns-query
 tencentproxy.com = server:https://dns.alidns.com/dns-query
 tencentrio.com = server:https://dns.alidns.com/dns-query
@@ -15540,6 +15555,7 @@ tenda.com.cn = server:https://dns.alidns.com/dns-query
 tendbcluster.com = server:https://dns.alidns.com/dns-query
 tendcloud.com = server:https://dns.alidns.com/dns-query
 tendis.net = server:https://dns.alidns.com/dns-query
+tengmed.com = server:https://dns.alidns.com/dns-query
 tenpay.com = server:https://dns.alidns.com/dns-query
 tenxcloud.com = server:https://dns.alidns.com/dns-query
 tesoon.com = server:https://dns.alidns.com/dns-query
@@ -16220,6 +16236,7 @@ wasu.tv = server:https://dns.alidns.com/dns-query
 wasumedia.cn = server:https://dns.alidns.com/dns-query
 wbimg.cn = server:https://dns.alidns.com/dns-query
 wbimg.com = server:https://dns.alidns.com/dns-query
+wbweilicai.com = server:https://dns.alidns.com/dns-query
 wcbygame.com = server:https://dns.alidns.com/dns-query
 wcdn.cn = server:https://dns.alidns.com/dns-query
 wch-ic.com = server:https://dns.alidns.com/dns-query
@@ -16355,6 +16372,7 @@ woodo.cn = server:https://dns.alidns.com/dns-query
 wooyun.org = server:https://dns.alidns.com/dns-query
 woozooo.com = server:https://dns.alidns.com/dns-query
 woread.com.cn = server:https://dns.alidns.com/dns-query
+workbuddy.cn = server:https://dns.alidns.com/dns-query
 workercn.cn = server:https://dns.alidns.com/dns-query
 worktile.com = server:https://dns.alidns.com/dns-query
 worldofship.cn = server:https://dns.alidns.com/dns-query
