@@ -1,7 +1,7 @@
 #!name=Generated Domestic DNS
 #!desc=Routes ChinaDomain and manual domestic DNS hosts to encrypted domestic DNS.
 #!author=egern-rule-artifacts
-# Host mappings: 17167
+# Host mappings: 17171
 # Unrepresentable keyword/regexp rules: 5
 
 [Host]
@@ -8162,6 +8162,7 @@
 *.ytzq.com = server:https://dns.alidns.com/dns-query
 *.yuanbei.biz = server:https://dns.alidns.com/dns-query
 *.yuanfudao.com = server:https://dns.alidns.com/dns-query
+*.yuanqidesk.com = server:https://dns.alidns.com/dns-query
 *.yuanshen.com = server:https://dns.alidns.com/dns-query
 *.yuansouti.com = server:https://dns.alidns.com/dns-query
 *.yuantiku.com = server:https://dns.alidns.com/dns-query
@@ -8310,6 +8311,7 @@
 *.zhcw.com = server:https://dns.alidns.com/dns-query
 *.zhenai.com = server:https://dns.alidns.com/dns-query
 *.zhfund.com = server:https://dns.alidns.com/dns-query
+*.zhhainiao.com = server:https://dns.alidns.com/dns-query
 *.zhi10.com = server:https://dns.alidns.com/dns-query
 *.zhibo8.cc = server:https://dns.alidns.com/dns-query
 *.zhibo8.com = server:https://dns.alidns.com/dns-query
@@ -16861,6 +16863,7 @@ ytxptz.cn = server:https://dns.alidns.com/dns-query
 ytzq.com = server:https://dns.alidns.com/dns-query
 yuanbei.biz = server:https://dns.alidns.com/dns-query
 yuanfudao.com = server:https://dns.alidns.com/dns-query
+yuanqidesk.com = server:https://dns.alidns.com/dns-query
 yuanshen.com = server:https://dns.alidns.com/dns-query
 yuansouti.com = server:https://dns.alidns.com/dns-query
 yuantiku.com = server:https://dns.alidns.com/dns-query
@@ -17009,6 +17012,7 @@ zhaopin.com = server:https://dns.alidns.com/dns-query
 zhcw.com = server:https://dns.alidns.com/dns-query
 zhenai.com = server:https://dns.alidns.com/dns-query
 zhfund.com = server:https://dns.alidns.com/dns-query
+zhhainiao.com = server:https://dns.alidns.com/dns-query
 zhi10.com = server:https://dns.alidns.com/dns-query
 zhibo8.cc = server:https://dns.alidns.com/dns-query
 zhibo8.com = server:https://dns.alidns.com/dns-query

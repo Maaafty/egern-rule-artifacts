@@ -3,4 +3,4 @@
 # Behavior: domain
 
 payload:
-  - "manual-reject-placeholder.invalid"
+  - "brunhild.challenges.cloudflare.com"
