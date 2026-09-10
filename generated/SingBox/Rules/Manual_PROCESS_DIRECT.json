@@ -3,7 +3,8 @@
   "rules": [
     {
       "process_name": [
-        "easytier-core.exe"
+        "tailscaled",
+        "tailscaled.exe"
       ]
     }
   ]

@@ -2,8 +2,8 @@
   "version": 3,
   "rules": [
     {
-      "domain": [
-        "mafty-fnos.et.net"
+      "domain_suffix": [
+        "ts.net"
       ]
     }
   ]
