@@ -1,7 +1,7 @@
 #!name=Generated Domestic DNS
 #!desc=Routes ChinaDomain and manual domestic DNS hosts to encrypted domestic DNS.
 #!author=egern-rule-artifacts
-# Host mappings: 17379
+# Host mappings: 17381
 # Unrepresentable keyword/regexp rules: 5
 
 [Host]
@@ -6540,6 +6540,7 @@
 *.sinopecnews.com.cn = server:https://dns.alidns.com/dns-query
 *.sinopecsales.com = server:https://dns.alidns.com/dns-query
 *.sipeed.com = server:https://dns.alidns.com/dns-query
+*.sjfls6.com = server:https://dns.alidns.com/dns-query
 *.sjwyx.com = server:https://dns.alidns.com/dns-query
 *.skillhub.cn = server:https://dns.alidns.com/dns-query
 *.skimit.net = server:https://dns.alidns.com/dns-query
@@ -15299,6 +15300,7 @@ sinopecgroup.com = server:https://dns.alidns.com/dns-query
 sinopecnews.com.cn = server:https://dns.alidns.com/dns-query
 sinopecsales.com = server:https://dns.alidns.com/dns-query
 sipeed.com = server:https://dns.alidns.com/dns-query
+sjfls6.com = server:https://dns.alidns.com/dns-query
 sjwyx.com = server:https://dns.alidns.com/dns-query
 skillhub.cn = server:https://dns.alidns.com/dns-query
 skimit.net = server:https://dns.alidns.com/dns-query
