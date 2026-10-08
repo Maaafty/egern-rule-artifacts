@@ -4,7 +4,6 @@
     {
       "domain": [
         "api.steampowered.com",
-        "store.steampowered.com",
         "x.ttzgame.cn"
       ],
       "domain_suffix": [
