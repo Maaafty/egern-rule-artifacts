@@ -6,3 +6,6 @@ domain_suffix_set:
   - "gamekee.com"
   - "qiecdn.com"
   - "maj-soul.com"
+# Keep the same cache-node boundary as Manual_DIRECT.
+domain_regex_set:
+  - '^cache[0-9]+-[a-z0-9-]+\.steamcontent\.com$'

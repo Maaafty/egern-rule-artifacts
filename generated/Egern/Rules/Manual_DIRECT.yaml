@@ -4,3 +4,6 @@ domain_suffix_set:
   - "gamekee.com"
   - "qiecdn.com"
   - "maj-soul.com"
+# Only numbered regional Steam cache nodes override upstream routing.
+domain_regex_set:
+  - '^cache[0-9]+-[a-z0-9-]+\.steamcontent\.com$'
